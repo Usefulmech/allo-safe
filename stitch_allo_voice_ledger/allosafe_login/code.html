@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .otp-input:focus {
+            border-color: #3D3D3D;
+            box-shadow: 0 0 0 2px rgba(61, 61, 61, 0.1);
+        }
+        .shadow-soft {
+            box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#3f3c3c",
+                        "tertiary-fixed": "#e7e1e1",
+                        "on-tertiary-container": "#aba6a6",
+                        "secondary": "#5f5e5e",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "surface-bright": "#fdf8f8",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary-fixed-variant": "#494646",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#3d3d3d",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#474747",
+                        "inverse-primary": "#c8c6c6",
+                        "outline": "#747878",
+                        "on-tertiary-fixed": "#1d1b1b",
+                        "secondary-container": "#e5e2e1",
+                        "surface-container": "#f1edec",
+                        "on-secondary-fixed-variant": "#474646",
+                        "tertiary": "#292626",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f4f0ef",
+                        "on-primary": "#ffffff",
+                        "surface": "#fdf8f8",
+                        "on-secondary-container": "#656464",
+                        "on-surface": "#1c1b1b",
+                        "surface-container-low": "#f7f3f2",
+                        "surface-tint": "#5f5e5e",
+                        "on-primary-fixed": "#1b1c1c",
+                        "surface-container-highest": "#e5e2e1",
+                        "primary-fixed": "#e4e2e1",
+                        "error": "#ba1a1a",
+                        "background": "#fdf8f8",
+                        "inverse-surface": "#313030",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c4c7c7",
+                        "primary-fixed-dim": "#c8c6c6",
+                        "on-surface-variant": "#444748",
+                        "on-primary-container": "#a9a8a7",
+                        "secondary-fixed": "#e5e2e1",
+                        "primary": "#272727",
+                        "surface-dim": "#ddd9d8",
+                        "tertiary-fixed-dim": "#cbc5c5",
+                        "surface-container-high": "#ebe7e7",
+                        "on-secondary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-background": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "stack-sm": "8px",
+                        "base": "4px",
+                        "stack-lg": "32px",
+                        "section-padding": "64px",
+                        "container-margin": "24px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "numeral-xl": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "numeral-xl": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "300"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: 100dvh;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen font-body-md selection:bg-primary-container/30 flex flex-col items-center justify-center overflow-x-hidden">
+<main class="w-full max-w-md px-container-margin py-stack-lg flex flex-col min-h-screen relative overflow-hidden">
+<!-- Header Section -->
+<header class="mt-stack-lg mb-stack-lg">
+<h1 class="font-headline-xl text-primary mb-base" data-i18n="loginTitle">Welcome to SoroKobo</h1>
+<p class="font-body-lg text-on-surface-variant leading-relaxed" data-i18n="loginSubtitle">
+            Every kobo, counted.
+        </p>
+</header>
+<!-- Login Form Container -->
+<div class="bg-surface rounded-xl shadow-soft p-gutter w-full transition-all duration-300 border border-outline-variant/30" id="login-container">
+<!-- Step 1: Phone Input -->
+<div class="space-y-stack-md" id="step-phone">
+<div class="space-y-base">
+<label class="font-label-md text-on-surface-variant block uppercase tracking-wider" data-i18n="phone_label" for="phone">Phone Number</label>
+<div class="flex items-center bg-surface-container border border-outline-variant/50 rounded-lg focus-within:border-primary focus-within:ring-1 focus-within:ring-primary overflow-hidden transition-all h-[56px]">
+<span class="pl-gutter pr-base font-bold text-primary border-r border-outline-variant/50">+234</span>
+<input class="bg-transparent border-none focus:ring-0 w-full font-title-md tracking-widest placeholder:text-outline-variant/60 placeholder:font-normal" id="phone" maxlength="10" placeholder="801 234 5678" type="tel"/>
+</div>
+</div>
+<button class="w-full h-[56px] rounded-lg bg-primary text-on-primary font-title-md flex items-center justify-center gap-base active:scale-[0.98] transition-transform shadow-md" onclick="handleSendPin()">
+<span data-i18n="send_pin_btn">Send PIN</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center text-label-md text-on-surface-variant px-gutter" data-i18n="terms_notice">
+                By continuing, you agree to track your ₦ earnings accurately.
+            </p>
+</div>
+<!-- Step 2: OTP Input -->
+<div class="hidden space-y-stack-md" id="step-otp">
+<div class="space-y-base text-center">
+<label class="font-label-md text-on-surface-variant block uppercase tracking-wider" data-i18n="otp_label">Enter 4-digit PIN</label>
+<div class="flex justify-between gap-base max-w-[280px] mx-auto py-stack-md">
+<input class="otp-input w-14 h-14 text-center text-title-md font-bold bg-surface-container border border-outline-variant/50 rounded-lg appearance-none" id="otp-1" maxlength="1" oninput="moveToNext(this, 'otp-2')" type="number"/>
+<input class="otp-input w-14 h-14 text-center text-title-md font-bold bg-surface-container border border-outline-variant/50 rounded-lg appearance-none" id="otp-2" maxlength="1" oninput="moveToNext(this, 'otp-3')" type="number"/>
+<input class="otp-input w-14 h-14 text-center text-title-md font-bold bg-surface-container border border-outline-variant/50 rounded-lg appearance-none" id="otp-3" maxlength="1" oninput="moveToNext(this, 'otp-4')" type="number"/>
+<input class="otp-input w-14 h-14 text-center text-title-md font-bold bg-surface-container border border-outline-variant/50 rounded-lg appearance-none" id="otp-4" maxlength="1" oninput="verifyOtp(this)" type="number"/>
+</div>
+<button class="text-on-surface-variant font-label-md mt-base active:opacity-70 transition-opacity hover:text-primary" data-i18n="resend_btn" onclick="resendPin()">Resend PIN</button>
+</div>
+<button class="w-full text-center text-label-md text-on-surface-variant underline py-base" data-i18n="change_phone_btn" onclick="window.location.reload()">
+                Change Phone Number
+            </button>
+</div>
+</div>
+<!-- Illustration / Background Texture -->
+<div class="mt-auto pt-stack-lg pb-stack-md flex justify-center opacity-30">
+<div class="relative w-32 h-32">
+<div class="absolute inset-0 rounded-full border-4 border-dashed border-outline-variant animate-[spin_30s_linear_infinite]"></div>
+<div class="absolute inset-4 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[48px]">receipt_long</span>
+</div>
+</div>
+</div>
+<!-- Voice Call/Mic Tooltip Anchor -->
+<div class="fixed bottom-12 right-6 z-50">
+<!-- Tooltip -->
+<div class="absolute bottom-full right-0 mb-4 w-48 p-gutter bg-primary text-on-primary text-label-md rounded-xl shadow-lg animate-bounce transition-all duration-500 opacity-0 transform translate-y-4" id="voice-tooltip">
+<span data-i18n="firstLoginTooltip">Your voice calls are linked here</span>
+<div class="absolute top-full right-6 border-8 border-transparent border-t-primary"></div>
+</div>
+<!-- Voice FAB -->
+<button class="w-16 h-16 rounded-full bg-primary text-on-primary shadow-lg flex items-center justify-center active:scale-90 transition-all hover:opacity-90" onclick="toggleTooltip()">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</div>
+</main>
+<!-- Success Overlay (Hidden) -->
+<div class="fixed inset-0 bg-primary/95 z-[100] flex flex-col items-center justify-center text-on-primary opacity-0 pointer-events-none transition-opacity duration-500" id="success-overlay">
+<span class="material-symbols-outlined text-[84px] mb-stack-lg animate-pulse text-surface-bright">check_circle</span>
+<h2 class="font-headline-lg" data-i18n="success_title">Success!</h2>
+<p class="font-body-lg text-surface-variant" data-i18n="success_subtitle">Opening your ledger...</p>
+</div>
+<script>
+    const translations = {
+        en: {
+            loginTitle: "Welcome to SoroKobo",
+            loginSubtitle: "Every kobo, counted.",
+            phone_label: "Phone Number",
+            send_pin_btn: "Send PIN",
+            terms_notice: "By continuing, you agree to track your ₦ earnings accurately.",
+            otp_label: "Enter 4-digit PIN",
+            resend_btn: "Resend PIN",
+            change_phone_btn: "Change Phone Number",
+            firstLoginTooltip: "Your voice calls are linked here",
+            success_title: "Success!",
+            success_subtitle: "Opening your ledger...",
+            alert_resend: "A new PIN has been sent to +234 ",
+            alert_login: "Login successful! Navigating to Ledger Dashboard..."
+        },
+        yo: {
+            loginTitle: "E ku abo si SoroKobo",
+            loginSubtitle: "Gbogbo kobo, a n ka.",
+            phone_label: "Nọmba Foonu",
+            send_pin_btn: "Fi PIN ransi",
+            terms_notice: "Nipa tẹsiwaju, o gba lati tọpa awọn owo ti n wọle ₦ rẹ ni deede.",
+            otp_label: "Tẹ PIN oni-nọmba 4 sii",
+            resend_btn: "Fi PIN ransi lẹẹkansi",
+            change_phone_btn: "Yi Nọmba Foonu pada",
+            firstLoginTooltip: "Awọn ipe ohun rẹ ni asopọ si ibi",
+            success_title: "Aṣeyọri!",
+            success_subtitle: "N ṣii iwe rẹ...",
+            alert_resend: "A ti fi PIN tuntun ranṣẹ si +234 ",
+            alert_login: "Wiwọle ṣaṣeyọri! Lilọ si Dasibodu Ledger..."
+        }
+    };
+
+    let currentLang = 'en';
+
+    function updateContent() {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[currentLang][key]) {
+                el.textContent = translations[currentLang][key];
+            }
+        });
+    }
+
+    function handleSendPin() {
+        const phoneInput = document.getElementById('phone');
+        if (phoneInput.value.length < 10) {
+            phoneInput.closest('div').classList.add('border-error');
+            return;
+        }
+        
+        const stepPhone = document.getElementById('step-phone');
+        const stepOtp = document.getElementById('step-otp');
+        
+        stepPhone.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            stepPhone.classList.add('hidden');
+            stepOtp.classList.remove('hidden');
+            setTimeout(() => {
+                stepOtp.classList.remove('opacity-0', 'scale-95');
+                document.getElementById('otp-1').focus();
+            }, 50);
+        }, 300);
+    }
+
+    function moveToNext(current, nextId) {
+        if (current.value.length === 1) {
+            document.getElementById(nextId).focus();
+        }
+    }
+
+    function verifyOtp(current) {
+        if (current.value.length === 1) {
+            current.blur();
+            const overlay = document.getElementById('success-overlay');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                alert(translations[currentLang].alert_login);
+            }, 1500);
+        }
+    }
+
+    function resendPin() {
+        alert(translations[currentLang].alert_resend + document.getElementById('phone').value);
+    }
+
+    function toggleTooltip() {
+        const tooltip = document.getElementById('voice-tooltip');
+        tooltip.classList.toggle('opacity-0');
+        tooltip.classList.toggle('translate-y-4');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        updateContent();
+        setTimeout(() => {
+            const tooltip = document.getElementById('voice-tooltip');
+            tooltip.classList.remove('opacity-0', 'translate-y-4');
+            setTimeout(() => {
+                tooltip.classList.add('opacity-0', 'translate-y-4');
+            }, 5000);
+        }, 1000);
+    });
+
+    document.querySelectorAll('.otp-input').forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !input.value) {
+                const prev = input.previousElementSibling;
+                if (prev) prev.focus();
+            }
+        });
+    });
+</script>
+</body></html>

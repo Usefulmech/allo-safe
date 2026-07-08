@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo | Inventory Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary-fixed": "#1d1b1b",
+                        "on-background": "#1c1b1b",
+                        "tertiary-fixed": "#e7e1e1",
+                        "on-error-container": "#93000a",
+                        "primary": "#272727",
+                        "outline-variant": "#c4c7c7",
+                        "tertiary-container": "#3f3c3c",
+                        "background": "#fdf8f8",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "error": "#DC2626",
+                        "tertiary": "#292626",
+                        "error-container": "#ffdad6",
+                        "outline": "#747878",
+                        "inverse-surface": "#313030",
+                        "surface-bright": "#fdf8f8",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#474747",
+                        "secondary-container": "#e5e2e1",
+                        "on-surface": "#1c1b1b",
+                        "surface-dim": "#ddd9d8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#D4880F",
+                        "surface-tint": "#5f5e5e",
+                        "primary-fixed": "#e4e2e1",
+                        "surface": "#fdf8f8",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-surface-variant": "#444748",
+                        "on-tertiary-container": "#aba6a6",
+                        "primary-fixed-dim": "#c8c6c6",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f7f3f2",
+                        "surface-container": "#f1edec",
+                        "tertiary-fixed-dim": "#cbc5c5",
+                        "surface-container-high": "#ebe7e7",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#1b1c1c",
+                        "primary-container": "#3d3d3d",
+                        "on-primary-container": "#a9a8a7",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "secondary": "#5f5e5e",
+                        "inverse-primary": "#c8c6c6",
+                        "on-tertiary-fixed-variant": "#494646",
+                        "on-secondary-container": "#656464",
+                        "inverse-on-surface": "#f4f0ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "section-padding": "64px",
+                        "container-margin": "24px",
+                        "stack-md": "16px",
+                        "base": "4px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "numeral-xl": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "numeral-xl": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "300"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f1edec;
+            color: #1c1b1b;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+<!-- TopAppBar - Charcoal Palette -->
+<header class="w-full top-0 sticky bg-primary shadow-sm z-50 flex items-center justify-between px-stack-md py-stack-sm">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-white cursor-pointer active:scale-95 transition-transform" data-icon="language">language</span>
+<h1 class="font-bold text-white text-xl">SoroKobo</h1>
+</div>
+<div class="flex items-center gap-stack-sm">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-secondary-fixed">
+<img alt="Nigerian market trader profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfwDJlzBSVmWW6JHdx2GnwOLK-G2R6zeZk2D7RzQuA_Yy2KvEZjwfnLftKz46pu3Ivdxm50-0Su_mYrD4gooA73dgpnVBOYE4XKLxa0H8LX4AqyBLBKvGC1dIrwSe4utlXdYq-86WBnEEyW6xMRrtMvI_xmy4QHVrZWl_RDI4B63Ebpcqiz3Y6nd1zaKgq1x-3hFpMkoUl_rFxk6J-h5l5m8Mo-W9rtH_46zuFFVfHbAGUnYVHtKcDZ4TiEe2Q1r07ERvK-5jMKQaH"/>
+</div>
+</div>
+</header>
+<main class="px-container-margin mt-stack-lg max-w-2xl mx-auto">
+<!-- Dashboard Header & Search -->
+<section class="mb-stack-lg">
+<div class="flex justify-between items-center mb-stack-md">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary" data-i18n="inventory">Inventory</h2>
+<p class="font-body-md text-on-surface-variant" data-i18n="manage_items">Manage your market items</p>
+</div>
+<!-- Charcoal Button -->
+<button class="bg-primary text-white px-stack-md py-stack-md rounded-2xl font-bold flex items-center gap-2 active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span data-i18n="add_stock">Add Stock</span>
+</button>
+</div>
+<!-- Quick Stats -->
+<div class="grid grid-cols-2 gap-stack-md mb-stack-lg">
+<div class="bg-white p-stack-md rounded-xl shadow-sm border border-outline-variant/20">
+<span class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest" data-i18n="total_value">Total Value</span>
+<p class="text-xl font-bold text-primary mt-1">₦420,500</p>
+</div>
+<div class="bg-white p-stack-md rounded-xl shadow-sm border border-outline-variant/20">
+<span class="text-[10px] font-black text-on-surface-variant uppercase tracking-widest" data-i18n="low_stock">Low Stock</span>
+<p class="text-xl font-bold text-error mt-1">4 <span data-i18n="items_count">Items</span></p>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-stack-md top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full h-[56px] pl-[48px] pr-stack-md bg-white border-2 border-outline-variant rounded-xl font-body-md focus:ring-2 focus:ring-secondary-fixed focus:border-secondary-fixed outline-none transition-all shadow-sm" data-i18n-placeholder="search_items" placeholder="Search items..." type="text"/>
+</div>
+</section>
+<!-- Inventory List -->
+<section class="space-y-stack-md pb-10">
+<!-- Item 1: Low Stock (High Contrast Danger Red) -->
+<div class="bg-white p-stack-md rounded-xl shadow-sm border-l-[6px] border-error active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-bold text-lg text-primary" data-i18n="item_1_name">Honey Beans (Oloyin)</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-error text-[16px] font-bold" data-icon="warning">warning</span>
+<span class="text-error font-black text-xs uppercase" data-i18n="running_low">Running low</span>
+</div>
+</div>
+<p class="font-black text-primary">₦24,000</p>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant">
+<span><span data-i18n="count_12">12</span> <span data-i18n="unit_bags">bags</span> <span data-i18n="left">left</span></span>
+<span><span data-i18n="threshold">Threshold</span>: 20</span>
+</div>
+<div class="w-full h-4 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full transition-all duration-700 ease-out" style="width: 15%"></div>
+</div>
+</div>
+</div>
+<!-- Item 2: Healthy Stock (Ochre) -->
+<div class="bg-white p-stack-md rounded-xl shadow-sm border-l-[6px] border-secondary-fixed active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-bold text-lg text-primary" data-i18n="item_2_name">Long Grain Rice</h3>
+<span class="text-secondary-fixed font-black text-xs uppercase mt-1 inline-block" data-i18n="in_stock">In Stock</span>
+</div>
+<p class="font-black text-primary">₦58,500</p>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant">
+<span><span data-i18n="count_85">85</span> <span data-i18n="unit_bags">bags</span> <span data-i18n="left">left</span></span>
+<span><span data-i18n="goal">Goal</span>: 100</span>
+</div>
+<div class="w-full h-4 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary-fixed rounded-full transition-all duration-700 ease-out" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<!-- Item 3: Low Stock -->
+<div class="bg-white p-stack-md rounded-xl shadow-sm border-l-[6px] border-error active:bg-surface-container-low transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-bold text-lg text-primary" data-i18n="item_3_name">Vegetable Oil (25L)</h3>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-error text-[16px] font-bold" data-icon="warning">warning</span>
+<span class="text-error font-black text-xs uppercase" data-i18n="running_low">Running low</span>
+</div>
+</div>
+<p class="font-black text-primary">₦42,000</p>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs font-bold text-on-surface-variant">
+<span><span data-i18n="count_3">3</span> <span data-i18n="unit_litres">litres</span> <span data-i18n="left">left</span></span>
+<span><span data-i18n="threshold">Threshold</span>: 10</span>
+</div>
+<div class="w-full h-4 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-error rounded-full transition-all duration-700 ease-out" style="width: 30%"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Voice FAB - Ochre Palette -->
+<button class="fixed bottom-[100px] right-stack-md w-14 h-14 bg-secondary-fixed text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-all z-40 border-2 border-white/20">
+<span class="material-symbols-outlined text-[28px]" data-icon="mic" data-weight="fill">mic</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter h-20 bg-white shadow-[0px_-2px_12px_rgba(0,0,0,0.1)] rounded-t-[20px] z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="text-[10px] font-black" data-i18n="home">HOME</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="text-[10px] font-black" data-i18n="ledger">LEDGER</span>
+</a>
+<div class="flex flex-col items-center justify-center bg-secondary-fixed text-white px-5 py-2 rounded-2xl shadow-sm">
+<span class="material-symbols-outlined" data-icon="inventory_2" data-weight="fill">inventory_2</span>
+<span class="text-[10px] font-black" data-i18n="stock">STOCK</span>
+</div>
+<a class="flex flex-col items-center justify-center text-on-surface-variant gap-1" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-[10px] font-black" data-i18n="profile">PROFILE</span>
+</a>
+</nav>
+<!-- Voice Interface Overlay -->
+<div class="fixed inset-0 bg-primary/80 backdrop-blur-md z-[60] hidden flex-col items-center justify-center p-6" id="voice-overlay">
+<div class="bg-white w-full max-w-sm rounded-[32px] p-8 flex flex-col items-center shadow-2xl">
+<div class="flex items-end gap-2 h-16 mb-8">
+<div class="w-2 h-6 bg-secondary-fixed rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+<div class="w-2 h-12 bg-secondary-fixed rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+<div class="w-2 h-16 bg-secondary-fixed rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+<div class="w-2 h-8 bg-secondary-fixed rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+<div class="w-2 h-14 bg-secondary-fixed rounded-full animate-bounce" style="animation-delay: 0.5s"></div>
+</div>
+<h4 class="text-2xl font-bold text-primary mb-2" data-i18n="listening">Listening...</h4>
+<p class="text-on-surface-variant text-center mb-10 italic font-medium" data-i18n="voice_example">"Add ten bags of Oloyin beans..."</p>
+<button class="w-full bg-surface-container-highest text-primary py-4 rounded-2xl font-black active:scale-95 transition-transform" data-i18n="cancel" onclick="toggleVoice()">Cancel</button>
+</div>
+</div>
+<script>
+        const translations = {
+            en: {
+                inventory: "Inventory",
+                manage_items: "Manage your market items",
+                add_stock: "Add Stock",
+                total_value: "Total Value",
+                low_stock: "Low Stock",
+                items_count: "Items",
+                search_items: "Search items...",
+                running_low: "Running low",
+                in_stock: "In Stock",
+                unit_bags: "bags",
+                unit_litres: "litres",
+                left: "left",
+                threshold: "Threshold",
+                goal: "Goal",
+                home: "HOME",
+                ledger: "LEDGER",
+                stock: "STOCK",
+                profile: "PROFILE",
+                listening: "Listening...",
+                voice_example: '"Add ten bags of Oloyin beans..."',
+                cancel: "Cancel"
+            }
+        };
+
+        function toggleVoice() {
+            const overlay = document.getElementById('voice-overlay');
+            overlay.classList.toggle('hidden');
+            overlay.classList.toggle('flex');
+        }
+
+        document.querySelector('button.fixed.bottom-\\[100px\\]').addEventListener('click', toggleVoice);
+    </script>
+</body></html>

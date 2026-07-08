@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo - Add Transaction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        .mic-active-pulse {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 136, 15, 0.15); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 30px rgba(212, 136, 15, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 136, 15, 0); }
+        }
+        .waveform-container {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .state-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .processing-glow {
+            box-shadow: 0 0 40px rgba(212, 136, 15, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "charcoal": "#3D3D3D",
+                        "espresso": "#2A2520",
+                        "near-black": "#1A1A1A",
+                        "ochre": "#D4880F",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "outline-variant": "#c4c7c7",
+                        "on-primary-container": "#a9a8a7",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#494646",
+                        "on-secondary-container": "#4A3005",
+                        "on-surface-variant": "#444748",
+                        "inverse-primary": "#c8c6c6",
+                        "tertiary": "#292626",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface-container-high": "#ebe7e7",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#e4e2e1",
+                        "surface-container-highest": "#e5e2e1",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c8c6c6",
+                        "surface-container-low": "#f7f3f2",
+                        "on-tertiary-container": "#aba6a6",
+                        "tertiary-container": "#3f3c3c",
+                        "surface-tint": "#5f5e5e",
+                        "background": "#fdf8f8",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary-fixed": "#1d1b1b",
+                        "inverse-surface": "#313030",
+                        "secondary-container": "#D4880F",
+                        "tertiary-fixed": "#e7e1e1",
+                        "on-error-container": "#93000a",
+                        "outline": "#747878",
+                        "primary-container": "#3d3d3d",
+                        "tertiary-fixed-dim": "#cbc5c5",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#1b1c1c",
+                        "surface": "#fdf8f8",
+                        "on-primary-fixed-variant": "#474747",
+                        "primary": "#3D3D3D",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#D4880F",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#ddd9d8",
+                        "surface-variant": "#e5e2e1",
+                        "inverse-on-surface": "#f4f0ef",
+                        "surface-container": "#f1edec",
+                        "surface-bright": "#fdf8f8",
+                        "on-background": "#1c1b1b",
+                        "secondary-fixed": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "12px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "container-margin": "16px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface shadow-sm flex items-center justify-between px-md py-sm z-50">
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container-high transition-colors rounded-full active:scale-95" id="lang-toggle">language</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">SoroKobo</h1>
+</div>
+<div class="flex items-center">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a West African merchant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADDVXrZtCuCNBdVS4PqgQvpr22gB3jGCcjtV9ItXFNM_UYFXJ7jKDSfAyyNWWvyvHYFwOdacJa7rfUaa56B3sk21w9GKJXU_LOeTWQ6QncqQ2KgYfV4wKv0mmnA07M_pBm4GUzmGZHa7G-B6pS2VyIaChdWMhcHby2SP_GritakNVX16dJd_TQhn78xu5E3dXB3ygxvhnwJJ1kbuY10D3r5qg3_UdVzIsPgMfaVGAI9TnrOJ08Lbv7u2HHHE3j-mi6pXPJtgT8mj1q"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-container-margin pb-32">
+<!-- Instructional Header -->
+<div class="text-center mb-lg max-w-xs">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-xs" id="text-title">Record Trade</h2>
+<p class="text-on-surface-variant font-body-md opacity-80" id="text-subtitle">Tell Soro what happened: "Sold 2 bags of rice for 40,000 to Musa"</p>
+</div>
+<!-- Interaction Area -->
+<div class="relative w-full aspect-square max-w-[320px] flex items-center justify-center mb-md">
+<!-- Voice Button (Main Interaction) -->
+<button class="state-transition relative z-10 bg-charcoal text-white rounded-full w-64 h-64 flex flex-col items-center justify-center shadow-[0px_8px_24px_rgba(0,0,0,0.2)] active:scale-95 touch-none" id="voice-btn">
+<div class="flex flex-col items-center justify-center" id="btn-content">
+<span class="material-symbols-outlined text-[72px] mb-sm" id="mic-icon" style="font-variation-settings: 'FILL' 1;">mic</span>
+<span class="font-label-lg text-label-lg tracking-widest uppercase font-bold" id="btn-label">Soro</span>
+</div>
+<!-- Processing Spinner (hidden initially) -->
+<div class="absolute inset-0 flex items-center justify-center hidden" id="spinner">
+<span class="material-symbols-outlined text-[84px] text-ochre spinner">progress_activity</span>
+</div>
+</button>
+<!-- Ripple/Glow Effect Layer -->
+<div class="absolute inset-0 rounded-full scale-75 opacity-0 state-transition" id="ring-effect"></div>
+</div>
+<!-- Feedback Label -->
+<div class="text-center h-8 flex items-center justify-center">
+<p class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-widest state-transition" id="mic-status">Tap and hold to record</p>
+</div>
+<!-- Fallback Link -->
+<div class="mt-xl">
+<button class="flex items-center gap-sm text-primary font-label-lg hover:underline decoration-ochre decoration-2 underline-offset-4 px-lg py-md transition-colors rounded-xl bg-surface-container-low border border-outline-variant/30 shadow-sm" id="btn-type">
+<span class="material-symbols-outlined text-headline-sm">keyboard</span>
+<span id="text-type">Type instead</span>
+</button>
+</div>
+</main>
+<!-- Voice Feedback Sheet -->
+<div class="fixed bottom-[-100%] left-0 w-full bg-surface-container-lowest shadow-[0px_-8px_32px_rgba(0,0,0,0.15)] rounded-t-[40px] transition-all duration-500 ease-out z-[60] px-lg pt-xl pb-16" id="voice-sheet">
+<div class="w-16 h-1.5 bg-surface-container-highest rounded-full mx-auto mb-lg"></div>
+<div class="flex flex-col items-center gap-lg">
+<div class="flex items-center gap-md">
+<div class="flex gap-1.5" id="listening-dots">
+<div class="w-2.5 h-2.5 bg-ochre rounded-full animate-bounce"></div>
+<div class="w-2.5 h-2.5 bg-ochre rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+<div class="w-2.5 h-2.5 bg-ochre rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary" id="sheet-title">Soro is listening...</p>
+</div>
+<p class="text-on-surface-variant font-body-lg text-center italic px-md" id="transcription-preview">"I sold 3 liters of palm oil for..."</p>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-md bg-surface shadow-[0px_-4px_16px_rgba(0,0,0,0.06)] z-50 rounded-t-2xl border-t border-outline-variant/20">
+<div class="flex flex-col items-center justify-center text-on-surface-variant gap-1">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm" id="nav-home">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant gap-1">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label-sm text-label-sm" id="nav-ledger">Ledger</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-2 active:scale-95 transition-all duration-150 cursor-pointer shadow-md ring-2 ring-ochre/20">
+<span class="material-symbols-outlined" data-icon="mic" style="font-variation-settings: 'FILL' 1;">mic</span>
+<span class="font-label-sm text-label-sm" id="nav-voice">Voice</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant gap-1">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm" id="nav-stock">Stock</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant gap-1">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm" id="nav-profile">Profile</span>
+</div>
+</nav>
+<script>
+    const voiceBtn = document.getElementById('voice-btn');
+    const voiceSheet = document.getElementById('voice-sheet');
+    const micStatus = document.getElementById('mic-status');
+    const micIcon = document.getElementById('mic-icon');
+    const btnLabel = document.getElementById('btn-label');
+    const spinner = document.getElementById('spinner');
+    const btnContent = document.getElementById('btn-content');
+    const ringEffect = document.getElementById('ring-effect');
+    const sheetTitle = document.getElementById('sheet-title');
+    const langToggle = document.getElementById('lang-toggle');
+
+    // i18n Data
+    const i18n = {
+        en: {
+            title: "Record Trade",
+            subtitle: 'Tell Soro what happened: "Sold 2 bags of rice for 40,000 to Musa"',
+            hold: "Soro",
+            listening: "Soro is listening...",
+            understanding: "Soro is understanding...",
+            statusIdle: "Tap and hold to record",
+            statusListen: "Listening now...",
+            statusProcess: "Processing trade...",
+            type: "Type instead",
+            navHome: "Home",
+            navLedger: "Ledger",
+            navVoice: "Voice",
+            navStock: "Stock",
+            navProfile: "Profile"
+        },
+        ha: { // Hausa Example
+            title: "Rikodi Kasuwanci",
+            subtitle: 'Faɗawa Soro abin da ya faru: "An sayar da buhun shinkafa 2 akan 40,000 ga Musa"',
+            hold: "Soro",
+            listening: "Soro yana sauraro...",
+            understanding: "Soro yana fahimta...",
+            statusIdle: "Taɓa ka riƙe don yin rikodi",
+            statusListen: "Ana sauraro yanzu...",
+            statusProcess: "Ana sarrafa bayanai...",
+            type: "Rubuta maimakon haka",
+            navHome: "Gida",
+            navLedger: "Littafi",
+            navVoice: "Murya",
+            navStock: "Kaya",
+            navProfile: "Salo"
+        }
+    };
+
+    let currentLang = 'en';
+
+    const updateI18n = () => {
+        const t = i18n[currentLang];
+        document.getElementById('text-title').textContent = t.title;
+        document.getElementById('text-subtitle').textContent = t.subtitle;
+        document.getElementById('btn-label').textContent = t.hold;
+        document.getElementById('text-type').textContent = t.type;
+        document.getElementById('nav-home').textContent = t.navHome;
+        document.getElementById('nav-ledger').textContent = t.navLedger;
+        document.getElementById('nav-voice').textContent = t.navVoice;
+        document.getElementById('nav-stock').textContent = t.navStock;
+        document.getElementById('nav-profile').textContent = t.navProfile;
+        
+        if (!isProcessing && !isListening) {
+            micStatus.textContent = t.statusIdle;
+            sheetTitle.textContent = t.listening;
+        }
+    };
+
+    langToggle.addEventListener('click', () => {
+        currentLang = currentLang === 'en' ? 'ha' : 'en';
+        updateI18n();
+    });
+
+    let isListening = false;
+    let isProcessing = false;
+
+    const setStateIdle = () => {
+        isListening = false;
+        isProcessing = false;
+        voiceBtn.classList.remove('bg-espresso', 'bg-near-black', 'mic-active-pulse', 'processing-glow');
+        voiceBtn.classList.add('bg-charcoal');
+        btnContent.classList.remove('opacity-0');
+        spinner.classList.add('hidden');
+        micStatus.textContent = i18n[currentLang].statusIdle;
+        micStatus.classList.remove('text-ochre', 'font-bold');
+        voiceSheet.style.bottom = '-100%';
+        ringEffect.classList.remove('ring-[20px]', 'ring-ochre/20', 'ring-4', 'ring-ochre/15');
+        ringEffect.classList.add('opacity-0');
+    };
+
+    const setStateRecording = () => {
+        if (isProcessing) return;
+        isListening = true;
+        voiceBtn.classList.remove('bg-charcoal');
+        voiceBtn.classList.add('bg-espresso', 'mic-active-pulse');
+        micStatus.textContent = i18n[currentLang].statusListen;
+        micStatus.classList.add('text-ochre', 'font-bold');
+        voiceSheet.style.bottom = '0';
+        sheetTitle.textContent = i18n[currentLang].listening;
+        ringEffect.classList.remove('opacity-0');
+        ringEffect.classList.add('ring-4', 'ring-ochre/15');
+    };
+
+    const setStateProcessing = () => {
+        isListening = false;
+        isProcessing = true;
+        voiceBtn.classList.remove('bg-espresso', 'mic-active-pulse');
+        voiceBtn.classList.add('bg-near-black', 'processing-glow');
+        btnContent.classList.add('opacity-0');
+        spinner.classList.remove('hidden');
+        micStatus.textContent = i18n[currentLang].statusProcess;
+        sheetTitle.textContent = i18n[currentLang].understanding;
+        ringEffect.classList.remove('ring-4', 'ring-ochre/15');
+        ringEffect.classList.add('ring-[20px]', 'ring-ochre/20', 'opacity-100');
+        
+        // Simulate finishing processing after 3 seconds
+        setTimeout(() => {
+            if (isProcessing) setStateIdle();
+        }, 3000);
+    };
+
+    // Interaction Handlers
+    const startAction = (e) => {
+        if (isProcessing) return;
+        e.preventDefault();
+        setStateRecording();
+    };
+
+    const endAction = (e) => {
+        if (!isListening) return;
+        e.preventDefault();
+        setStateProcessing();
+    };
+
+    // Events for Desktop/Mobile
+    voiceBtn.addEventListener('mousedown', startAction);
+    voiceBtn.addEventListener('mouseup', endAction);
+    voiceBtn.addEventListener('mouseleave', (e) => isListening && endAction(e));
+    
+    voiceBtn.addEventListener('touchstart', startAction, { passive: false });
+    voiceBtn.addEventListener('touchend', endAction, { passive: false });
+
+    // Initial load
+    updateI18n();
+</script>
+</body></html>

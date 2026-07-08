@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo - User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<!-- THEME CONFIGURATION -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-container": "#3f3c3c",
+                    "tertiary-fixed": "#e7e1e1",
+                    "on-tertiary-container": "#aba6a6",
+                    "secondary": "#5f5e5e", // Charcoal
+                    "on-secondary-fixed": "#1c1b1b",
+                    "surface-bright": "#fdf8f8",
+                    "surface-variant": "#e5e2e1",
+                    "on-tertiary-fixed-variant": "#494646",
+                    "error-container": "#ffdad6",
+                    "primary-container": "#3d3d3d",
+                    "secondary-fixed-dim": "#c9c6c5",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed-variant": "#474747",
+                    "inverse-primary": "#c8c6c6",
+                    "outline": "#747878",
+                    "on-tertiary-fixed": "#1d1b1b",
+                    "secondary-container": "#ffc641", // Ochre (using standard ochre hex for visibility)
+                    "surface-container": "#f1edec",
+                    "on-secondary-fixed-variant": "#474646",
+                    "tertiary": "#292626",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f4f0ef",
+                    "on-primary": "#ffffff",
+                    "surface": "#fdf8f8",
+                    "on-secondary-container": "#715300",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-low": "#f7f3f2",
+                    "surface-tint": "#5f5e5e",
+                    "on-primary-fixed": "#1b1c1c",
+                    "surface-container-highest": "#e5e2e1",
+                    "primary-fixed": "#e4e2e1",
+                    "error": "#ba1a1a",
+                    "background": "#fdf8f8",
+                    "inverse-surface": "#313030",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c4c7c7",
+                    "primary-fixed-dim": "#c8c6c6",
+                    "on-surface-variant": "#444748",
+                    "on-primary-container": "#a9a8a7",
+                    "secondary-fixed": "#e5e2e1",
+                    "primary": "#272727", // Charcoal
+                    "surface-dim": "#ddd9d8",
+                    "tertiary-fixed-dim": "#cbc5c5",
+                    "surface-container-high": "#ebe7e7",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-background": "#1c1b1b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "stack-sm": "8px",
+                    "base": "4px",
+                    "stack-lg": "32px",
+                    "section-padding": "64px",
+                    "container-margin": "24px",
+                    "stack-md": "16px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-surface shadow-sm w-full top-0 sticky z-50 flex items-center justify-between px-md py-sm">
+<div class="flex items-center gap-sm">
+<button class="material-symbols-outlined text-primary p-sm active:scale-95 transition-transform">arrow_back</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">SoroKobo</h1>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant p-sm">settings</button>
+</header>
+<main class="px-container-margin py-md space-y-lg">
+<!-- User Info Card -->
+<div class="bg-white rounded-xl p-lg shadow-sm border border-surface-variant flex items-center gap-lg">
+<div class="w-20 h-20 rounded-full overflow-hidden border-2 border-secondary-container">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT_MjHpOURmVA3EmSRtxmzMNbkeK9EtTAA8wx0us0ZexuzA_FT-6JBf-3glCjuBVaNJ9JrIH-3I47UKYyVyCLsT0-mon7H6vTPIAtnPd3uXxzEbOxEJskD9XtdqnlJXk5K9RSic8hI6O3mclj6ZuWT45eHW0b6tYu-vCPW_hxMm6GeoO6RTxSfnb343kuwAFJeB1T6cAgR6dfciRPlg47Ph8TTwFi_5JYBJduFVhK1UOLE_3rwHs92rkE65DaH9TqarJs87vcof0di"/>
+</div>
+<div>
+<h2 class="font-headline-sm text-on-surface">Amina Bello</h2>
+<p class="font-body-md text-on-surface-variant" data-i18n="market_merchant">Market Merchant</p>
+<p class="font-label-sm text-outline">ID: SORO-882-AB</p>
+</div>
+</div>
+<!-- Financial Summary Button -->
+<button class="w-full bg-primary text-on-primary py-lg rounded-xl flex items-center justify-between px-lg shadow-md active:scale-[0.98] transition-all">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-secondary-container">insights</span>
+<span class="font-headline-sm" data-i18n="financialSummary">Financial Summary</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<!-- Language Switcher -->
+<section class="space-y-sm">
+<h3 class="font-label-lg text-primary uppercase tracking-wider" data-i18n="languageLabel">Language / Èdè / Harshe / Asụsụ</h3>
+<div class="grid grid-cols-2 gap-sm">
+<button class="flex items-center justify-between px-md py-sm rounded-lg border-2 border-secondary-container bg-secondary-container/20 text-primary font-bold shadow-sm" id="lang-en" onclick="setLanguage('en')">
+<span>English</span>
+<span class="material-symbols-outlined text-[20px] check-icon" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</button>
+<button class="flex items-center justify-between px-md py-sm rounded-lg border border-surface-variant bg-white text-on-surface-variant font-medium hover:border-secondary-container transition-colors" id="lang-pidgin" onclick="setLanguage('pidgin')">
+<span>Pidgin</span>
+</button>
+<button class="flex items-center justify-between px-md py-sm rounded-lg border border-surface-variant bg-white text-on-surface-variant font-medium hover:border-secondary-container transition-colors" id="lang-yo" onclick="setLanguage('yo')">
+<span>Yorùbá</span>
+</button>
+<button class="flex items-center justify-between px-md py-sm rounded-lg border border-surface-variant bg-white text-on-surface-variant font-medium hover:border-secondary-container transition-colors" id="lang-ha" onclick="setLanguage('ha')">
+<span>Hausa</span>
+</button>
+<button class="flex items-center justify-between px-md py-sm rounded-lg border border-surface-variant bg-white text-on-surface-variant font-medium hover:border-secondary-container transition-colors" id="lang-ig" onclick="setLanguage('ig')">
+<span>Igbo</span>
+</button>
+</div>
+</section>
+<!-- Voice History Section -->
+<section class="space-y-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-label-lg text-primary uppercase tracking-wider" data-i18n="myVoiceHistory">Recent Voice Entries</h3>
+<button class="text-secondary-container font-bold font-label-lg drop-shadow-sm" data-i18n="view_all">View All</button>
+</div>
+<div class="space-y-sm">
+<!-- Voice Log Item 1 -->
+<div class="bg-white border border-surface-variant rounded-lg p-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">mic</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md italic text-on-surface">"Add 5 bags of rice to my ledger..."</p>
+<p class="font-label-sm text-on-surface-variant" data-i18n="today_10am">Today, 10:15 AM</p>
+</div>
+<span class="material-symbols-outlined text-outline">play_circle</span>
+</div>
+<!-- Voice Log Item 2 -->
+<div class="bg-white border border-surface-variant rounded-lg p-md flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">mic</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md italic text-on-surface">"How much did Mama Sade pay?"</p>
+<p class="font-label-sm text-on-surface-variant" data-i18n="yesterday">Yesterday, 4:30 PM</p>
+</div>
+<span class="material-symbols-outlined text-outline">play_circle</span>
+</div>
+</div>
+</section>
+<!-- Logout Section -->
+<section class="pt-lg">
+<button class="w-full flex items-center justify-center gap-sm py-md text-error border border-error/20 rounded-xl bg-error/5 active:bg-error/10 transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-lg font-bold" data-i18n="logout">Log Out</span>
+</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-md bg-surface shadow-[0px_-2px_8px_rgba(0,0,0,0.08)] z-50 rounded-t-xl border-t border-surface-variant/50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm" data-i18n="nav_home">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-sm text-label-sm" data-i18n="nav_ledger">Ledger</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">mic</span>
+<span class="font-label-sm text-label-sm" data-i18n="nav_voice">Voice</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm" data-i18n="nav_stock">Stock</span>
+</a>
+<!-- ACTIVE TAB: Profile -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm font-bold" data-i18n="nav_profile">Profile</span>
+</a>
+</nav>
+<script>
+    const translations = {
+        en: {
+            market_merchant: "Market Merchant",
+            financialSummary: "Financial Summary",
+            languageLabel: "Select Language",
+            myVoiceHistory: "Recent Voice Entries",
+            view_all: "View All",
+            today_10am: "Today, 10:15 AM",
+            yesterday: "Yesterday, 4:30 PM",
+            nav_home: "Home",
+            nav_ledger: "Ledger",
+            nav_voice: "Voice",
+            nav_stock: "Stock",
+            nav_profile: "Profile",
+            logout: "Log Out"
+        },
+        pidgin: {
+            market_merchant: "Market Trader",
+            financialSummary: "How Money Dey Move",
+            languageLabel: "Choose Language",
+            myVoiceHistory: "Voice Wey You Record",
+            view_all: "See Everythin",
+            today_10am: "Today, 10:15 AM",
+            yesterday: "Yesterday, 4:30 PM",
+            nav_home: "Home",
+            nav_ledger: "Record",
+            nav_voice: "Voice",
+            nav_stock: "Store",
+            nav_profile: "You",
+            logout: "Comot"
+        },
+        yo: {
+            market_merchant: "Oníṣòwò Ọjà",
+            financialSummary: "Ìròyìn Owó rẹ",
+            languageLabel: "Yan Èdè rẹ",
+            myVoiceHistory: "Àwọn ohùn tóo gbohùnsílẹ̀",
+            view_all: "Wòó Gbogbo rẹ̀",
+            today_10am: "Òní, 10:15 òwúrọ̀",
+            yesterday: "Àná, 4:30 ìrọ̀lẹ́",
+            nav_home: "Ilé",
+            nav_ledger: "Ìwé-ìròyìn",
+            nav_voice: "Ohùn",
+            nav_stock: "Ọjà-itaja",
+            nav_profile: "Ìrísí",
+            logout: "Jáde"
+        },
+        ha: {
+            market_merchant: "Dan Kasuwa",
+            financialSummary: "Takaitaccen Kudi",
+            languageLabel: "Zabi Harshe",
+            myVoiceHistory: "Tarihin Muryar Ka",
+            view_all: "Duba duka",
+            today_10am: "Yau, 10:15 na safe",
+            yesterday: "Jiya, 4:30 na yamma",
+            nav_home: "Gida",
+            nav_ledger: "Littafi",
+            nav_voice: "Murya",
+            nav_stock: "Kaya",
+            nav_profile: "Bayanan",
+            logout: "Fita"
+        },
+        ig: {
+            market_merchant: "Onye na-ere ahịa",
+            financialSummary: "Nchịkọta Ego",
+            languageLabel: "Họrọ Asụsụ",
+            myVoiceHistory: "Ozi olu ndị ikpeazụ",
+            view_all: "Lee Ha Niile",
+            today_10am: "Taa, 10:15 ụtụtụ",
+            yesterday: "Ụnyahụ, 4:30 ehihie",
+            nav_home: "Ụlọ",
+            nav_ledger: "Ledger",
+            nav_voice: "Olu",
+            nav_stock: "Ahịa",
+            nav_profile: "Profaịlụ",
+            logout: "Wepụ"
+        }
+    };
+
+    function setLanguage(lang) {
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.textContent = translations[lang][key];
+            }
+        });
+
+        // Update UI styles for buttons
+        const buttons = ['en', 'pidgin', 'yo', 'ha', 'ig'];
+        buttons.forEach(id => {
+            const btn = document.getElementById(`lang-${id}`);
+            if (id === lang) {
+                btn.className = "flex items-center justify-between px-md py-sm rounded-lg border-2 border-secondary-container bg-secondary-container/20 text-primary font-bold shadow-sm";
+                if (!btn.querySelector('.check-icon')) {
+                    btn.innerHTML += `<span class="material-symbols-outlined text-[20px] check-icon" style="font-variation-settings: 'FILL' 1;">check_circle</span>`;
+                }
+            } else {
+                btn.className = "flex items-center justify-between px-md py-sm rounded-lg border border-surface-variant bg-white text-on-surface-variant font-medium hover:border-secondary-container transition-colors";
+                const check = btn.querySelector('.check-icon');
+                if (check) check.remove();
+            }
+        });
+    }
+</script>
+</body></html>

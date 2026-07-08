@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo Ledger - Transaction History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .swipe-container {
+            touch-action: pan-y;
+            overflow-x: hidden;
+            position: relative;
+        }
+        .swipe-content {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        .swipe-actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .voice-ring {
+            animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+    </style>
+<!-- THEME CONFIGURATION -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#474646",
+                    "surface-variant": "#e5e2e1",
+                    "on-tertiary-fixed": "#1d1b1b",
+                    "on-background": "#1c1b1b",
+                    "tertiary-fixed": "#e7e1e1",
+                    "on-error-container": "#93000a",
+                    "primary": "#272727",
+                    "outline-variant": "#c4c7c7",
+                    "tertiary-container": "#3f3c3c",
+                    "background": "#fdf8f8",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "error": "#DC2626", // Danger theme color
+                    "tertiary": "#292626",
+                    "error-container": "#ffdad6",
+                    "outline": "#747878",
+                    "inverse-surface": "#313030",
+                    "surface-bright": "#fdf8f8",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#474747",
+                    "secondary-container": "#e5e2e1",
+                    "on-surface": "#1c1b1b",
+                    "surface-dim": "#ddd9d8",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#e5e2e1",
+                    "surface-tint": "#5f5e5e",
+                    "primary-fixed": "#e4e2e1",
+                    "surface": "#fdf8f8",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-surface-variant": "#444748",
+                    "on-tertiary-container": "#aba6a6",
+                    "primary-fixed-dim": "#c8c6c6",
+                    "on-error": "#ffffff",
+                    "surface-container-low": "#f7f3f2",
+                    "surface-container": "#f1edec",
+                    "tertiary-fixed-dim": "#cbc5c5",
+                    "surface-container-high": "#ebe7e7",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#1b1c1c",
+                    "primary-container": "#3d3d3d",
+                    "on-primary-container": "#a9a8a7",
+                    "secondary-fixed-dim": "#c9c6c5",
+                    "secondary": "#5f5e5e",
+                    "inverse-primary": "#c8c6c6",
+                    "on-tertiary-fixed-variant": "#494646",
+                    "on-secondary-container": "#656464",
+                    "inverse-on-surface": "#f4f0ef",
+                    "ochre": "#D4880F", // Updated Ochre for Income/Sales
+                    "ochre-container": "#FFF3E0" // Lighter container for ochre
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "section-padding": "64px",
+                    "container-margin": "24px",
+                    "stack-md": "16px",
+                    "base": "4px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-xl": ["Inter"],
+                    "numeral-xl": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "numeral-xl": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "300"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-24">
+<!-- TopAppBar -->
+<header class="bg-surface-bright border-b border-outline-variant w-full top-0 sticky z-50 flex items-center justify-between px-gutter py-stack-sm">
+<div class="flex items-center gap-base">
+<button class="material-symbols-outlined text-primary p-base hover:bg-surface-container-high rounded-full transition-colors active:scale-95">language</button>
+<h1 class="font-title-md text-title-md font-bold text-primary">SoroKobo</h1>
+</div>
+<div class="flex items-center gap-base">
+<button class="material-symbols-outlined text-on-surface-variant p-base">search</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT_MjHpOURmVA3EmSRtxmzMNbkeK9EtTAA8wx0us0ZexuzA_FT-6JBf-3glCjuBVaNJ9JrIH-3I47UKYyVyCLsT0-mon7H6vTPIAtnPd3uXxzEbOxEJskD9XtdqnlJXk5K9RSic8hI6O3mclj6ZuWT45eHW0b6tYu-vCPW_hxMm6GeoO6RTxSfnb343kuwAFJeB1T6cAgR6dfciRPlg47Ph8TTwFi_5JYBJduFVhK1UOLE_3rwHs92rkE65DaH9TqarJs87vcof0di"/>
+</div>
+</div>
+</header>
+<main class="px-container-margin py-stack-md space-y-stack-md">
+<!-- Header & Balance Info -->
+<div class="space-y-base">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary" data-i18n="ledger_history">Gbogbo Ìṣirò</h2>
+<p class="font-body-md text-body-md text-on-surface-variant" data-i18n="track_market">Tẹ̀lé bí owó rẹ ṣe ń wọlé tí ó sì ń jáde</p>
+</div>
+<!-- Filter Tabs -->
+<div class="flex gap-stack-sm overflow-x-auto no-scrollbar pb-base">
+<button class="px-gutter py-base bg-primary text-on-primary rounded-full font-label-md text-label-md flex-shrink-0 active:scale-95 transition-all" data-i18n="filter_all">Gbogbo rẹ̀</button>
+<button class="px-gutter py-base bg-surface-container-high text-on-surface-variant rounded-full font-label-md text-label-md flex-shrink-0 hover:bg-surface-variant active:scale-95 transition-all" data-i18n="filter_sales">Ìtàjà</button>
+<button class="px-gutter py-base bg-surface-container-high text-on-surface-variant rounded-full font-label-md text-label-md flex-shrink-0 hover:bg-surface-variant active:scale-95 transition-all" data-i18n="filter_expenses">Ìnáwó</button>
+<button class="px-gutter py-base bg-surface-container-high text-on-surface-variant rounded-full font-label-md text-label-md flex-shrink-0 hover:bg-surface-variant active:scale-95 transition-all" data-i18n="filter_debts">Gbèsè</button>
+</div>
+<!-- Search Bar -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-gutter top-1/2 -translate-y-1/2 text-primary">search</span>
+<input class="w-full h-[56px] pl-[48px] pr-gutter bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent outline-none font-body-md" data-i18n-placeholder="search_placeholder" placeholder="Wá oníbàárà tàbí ọjà..." type="text"/>
+</div>
+<!-- Transaction List -->
+<div class="space-y-stack-sm" id="transaction-list">
+<!-- Sale Item -->
+<div class="swipe-container group bg-surface-container-lowest rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.06)] overflow-hidden border border-outline-variant/30">
+<div class="swipe-actions">
+<button class="bg-primary text-on-primary px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">edit</span>
+<span class="text-[10px] font-bold" data-i18n="action_edit">EDIT</span>
+</button>
+<button class="bg-error text-on-error px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">delete</span>
+<span class="text-[10px] font-bold" data-i18n="action_delete">DELETE</span>
+</button>
+</div>
+<div class="swipe-content relative z-10 bg-surface-container-lowest p-stack-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-ochre-container flex items-center justify-center">
+<span class="material-symbols-outlined text-ochre" style="font-variation-settings: 'FILL' 1;">arrow_upward</span>
+</div>
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Whole Grain Rice</h3>
+<p class="font-label-md text-on-surface-variant">5 Bags • 2 mins ago</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-ochre">₦145,000</p>
+<span class="px-base py-[2px] bg-ochre-container text-ochre rounded text-[10px] font-bold uppercase tracking-wider" data-i18n="type_sale">Ìtàjà</span>
+</div>
+</div>
+</div>
+<!-- Debt Item -->
+<div class="swipe-container group bg-surface-container-lowest rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.06)] overflow-hidden border border-outline-variant/30">
+<div class="swipe-actions">
+<button class="bg-primary text-on-primary px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">edit</span>
+<span class="text-[10px] font-bold" data-i18n="action_edit">EDIT</span>
+</button>
+<button class="bg-error text-on-error px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">delete</span>
+<span class="text-[10px] font-bold" data-i18n="action_delete">DELETE</span>
+</button>
+</div>
+<div class="swipe-content relative z-10 bg-surface-container-lowest p-stack-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-error-container/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">schedule</span>
+</div>
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Mama Sade (Credit)</h3>
+<p class="font-label-md text-on-surface-variant">3 Crates Eggs • 1h ago</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-error">₦12,500</p>
+<span class="px-base py-[2px] bg-error-container text-error rounded text-[10px] font-bold uppercase tracking-wider" data-i18n="type_debt">Gbèsè</span>
+</div>
+</div>
+</div>
+<!-- Expense Item -->
+<div class="swipe-container group bg-surface-container-lowest rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.06)] overflow-hidden border border-outline-variant/30">
+<div class="swipe-actions">
+<button class="bg-primary text-on-primary px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">edit</span>
+<span class="text-[10px] font-bold" data-i18n="action_edit">EDIT</span>
+</button>
+<button class="bg-error text-on-error px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">delete</span>
+<span class="text-[10px] font-bold" data-i18n="action_delete">DELETE</span>
+</button>
+</div>
+<div class="swipe-content relative z-10 bg-surface-container-lowest p-stack-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">arrow_downward</span>
+</div>
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Transport Fare</h3>
+<p class="font-label-md text-on-surface-variant">Logistics • 4h ago</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-on-surface">₦5,000</p>
+<span class="px-base py-[2px] bg-surface-variant text-on-surface-variant rounded text-[10px] font-bold uppercase tracking-wider" data-i18n="type_expense">Ìnáwó</span>
+</div>
+</div>
+</div>
+<!-- Sale Item 2 -->
+<div class="swipe-container group bg-surface-container-lowest rounded-xl shadow-[0px_2px_8px_rgba(0,0,0,0.06)] overflow-hidden border border-outline-variant/30">
+<div class="swipe-actions">
+<button class="bg-primary text-on-primary px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">edit</span>
+<span class="text-[10px] font-bold" data-i18n="action_edit">EDIT</span>
+</button>
+<button class="bg-error text-on-error px-gutter flex flex-col items-center justify-center">
+<span class="material-symbols-outlined">delete</span>
+<span class="text-[10px] font-bold" data-i18n="action_delete">DELETE</span>
+</button>
+</div>
+<div class="swipe-content relative z-10 bg-surface-container-lowest p-stack-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-ochre-container flex items-center justify-center">
+<span class="material-symbols-outlined text-ochre" style="font-variation-settings: 'FILL' 1;">arrow_upward</span>
+</div>
+<div>
+<h3 class="font-body-md font-bold text-on-surface">Vegetable Oil</h3>
+<p class="font-label-md text-on-surface-variant">10 Liters • Yesterday</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-ochre">₦22,000</p>
+<span class="px-base py-[2px] bg-ochre-container text-ochre rounded text-[10px] font-bold uppercase tracking-wider" data-i18n="type_sale">Ìtàjà</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State -->
+<div class="hidden flex-col items-center justify-center py-stack-lg text-center space-y-stack-md" id="empty-state">
+<div class="w-24 h-24 bg-surface-container flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined text-outline text-[48px]">history</span>
+</div>
+<div class="space-y-base">
+<h3 class="font-title-md text-title-md text-primary" data-i18n="empty_ledger_title">Kò sí ìṣirò kankan</h3>
+<p class="font-body-md text-on-surface-variant px-stack-lg" data-i18n="empty_ledger_desc">Bẹ̀rẹ̀ sí ní kọ iṣẹ́ rẹ sílẹ̀ láti rí wọn níbí.</p>
+</div>
+<button class="bg-primary text-on-primary px-stack-lg py-stack-md rounded-full font-label-md uppercase tracking-widest active:scale-95 transition-all" data-i18n="action_add_first">Fi Ìṣirò Kún Un</button>
+</div>
+</main>
+<!-- Voice Feedback Bar -->
+<div class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-primary text-on-primary p-stack-md rounded-2xl shadow-xl flex items-center gap-stack-md z-[60]" id="voice-overlay">
+<div class="relative">
+<div class="absolute inset-0 bg-ochre/20 rounded-full voice-ring"></div>
+<div class="relative w-10 h-10 rounded-full bg-ochre flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">mic</span>
+</div>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-ochre-container opacity-80" data-i18n="voice_listening">À ń gbọ́...</p>
+<p class="font-body-md italic">"Fi baagi ìrẹsì marun kún un..."</p>
+</div>
+<button class="material-symbols-outlined" onclick="toggleVoice()">close</button>
+</div>
+<!-- FAB Voice Button -->
+<button class="fixed right-container-margin bottom-28 w-16 h-16 rounded-full bg-ochre text-on-primary shadow-lg flex items-center justify-center z-50 active:scale-90 transition-all" onclick="toggleVoice()">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-stack-sm bg-surface-bright border-t border-outline-variant z-50 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-base hover:text-primary active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md" data-i18n="nav_home">Ilé</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary p-base active:scale-90 transition-all duration-150" href="#">
+<div class="bg-ochre-container px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined text-ochre" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+</div>
+<span class="font-label-md text-label-md text-ochre" data-i18n="nav_ledger">Ìṣirò</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-base hover:text-primary active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">mic</span>
+<span class="font-label-md text-label-md" data-i18n="nav_voice">Ohùn</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-base hover:text-primary active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md" data-i18n="nav_stock">Ọjà</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-base hover:text-primary active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md" data-i18n="nav_profile">Ènìyàn</span>
+</a>
+</nav>
+<script>
+    // Simple Swipe Logic
+    const containers = document.querySelectorAll('.swipe-container');
+    containers.forEach(container => {
+        let startX = 0;
+        const content = container.querySelector('.swipe-content');
+        
+        container.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, {passive: true});
+
+        container.addEventListener('touchmove', (e) => {
+            let diff = e.touches[0].clientX - startX;
+            if (diff < 0 && diff > -160) {
+                content.style.transform = `translateX(${diff}px)`;
+            }
+        }, {passive: true});
+
+        container.addEventListener('touchend', (e) => {
+            let diff = e.changedTouches[0].clientX - startX;
+            if (diff < -80) {
+                content.style.transform = `translateX(-160px)`;
+            } else {
+                content.style.transform = `translateX(0px)`;
+            }
+        });
+
+        container.addEventListener('click', () => {
+            content.style.transform = `translateX(0px)`;
+        });
+    });
+
+    // Voice Toggle
+    function toggleVoice() {
+        const overlay = document.getElementById('voice-overlay');
+        overlay.classList.toggle('hidden');
+        overlay.classList.toggle('flex');
+    }
+
+    // i18n Mock Logic
+    const i18n = {
+        yo: {
+            ledger_history: "Gbogbo Ìṣirò",
+            track_market: "Tẹ̀lé bí owó rẹ ṣe ń wọlé tí ó sì ń jáde",
+            filter_all: "Gbogbo rẹ̀",
+            filter_sales: "Ìtàjà",
+            filter_expenses: "Ìnáwó",
+            filter_debts: "Gbèsè",
+            search_placeholder: "Wá oníbàárà tàbí ọjà...",
+            type_sale: "Ìtàjà",
+            type_debt: "Gbèsè",
+            type_expense: "Ìnáwó",
+            action_edit: "TÚN-UN-ṢE",
+            action_delete: "PA-RẸ́",
+            nav_home: "Ilé",
+            nav_ledger: "Ìṣirò",
+            nav_voice: "Ohùn",
+            nav_stock: "Ọjà",
+            nav_profile: "Ènìyàn",
+            voice_listening: "À ń gbọ́...",
+            empty_ledger_title: "Kò sí ìṣirò kankan",
+            empty_ledger_desc: "Bẹ̀rẹ̀ sí ní kọ iṣẹ́ rẹ sílẹ̀ láti rí wọn níbí.",
+            action_add_first: "Fi Ìṣirò Kún Un"
+        }
+    };
+
+    function updateI18n(lang = 'yo') {
+        const dict = i18n[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) el.textContent = dict[key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (dict[key]) el.placeholder = dict[key];
+        });
+    }
+    
+    updateI18n('yo');
+</script>
+</body></html>

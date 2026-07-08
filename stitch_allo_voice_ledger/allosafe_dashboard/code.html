@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SoroKobo - Market Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .voice-ripple {
+            animation: ripple 2s infinite;
+        }
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        body {
+            background-color: #fdf8f8;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* High Contrast & Touch Target Helpers */
+        .touch-target {
+            min-width: 48px;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-secondary-fixed-variant": "#474646",
+                "surface-variant": "#e5e2e1",
+                "on-tertiary-fixed": "#1d1b1b",
+                "on-background": "#1c1b1b",
+                "tertiary-fixed": "#e7e1e1",
+                "on-error-container": "#93000a",
+                "primary": "#272727",
+                "outline-variant": "#c4c7c7",
+                "tertiary-container": "#3f3c3c",
+                "background": "#fdf8f8",
+                "on-secondary-fixed": "#1c1b1b",
+                "error": "#ba1a1a",
+                "tertiary": "#292626",
+                "error-container": "#ffdad6",
+                "outline": "#747878",
+                "inverse-surface": "#313030",
+                "surface-bright": "#fdf8f8",
+                "on-tertiary": "#ffffff",
+                "on-primary-fixed-variant": "#474747",
+                "secondary-container": "#e5e2e1",
+                "on-surface": "#1c1b1b",
+                "surface-dim": "#ddd9d8",
+                "surface-container-lowest": "#ffffff",
+                "on-primary": "#ffffff",
+                "secondary-fixed": "#e5e2e1",
+                "surface-tint": "#5f5e5e",
+                "primary-fixed": "#e4e2e1",
+                "surface": "#fdf8f8",
+                "surface-container-highest": "#e5e2e1",
+                "on-surface-variant": "#444748",
+                "on-tertiary-container": "#aba6a6",
+                "primary-fixed-dim": "#c8c6c6",
+                "on-error": "#ffffff",
+                "surface-container-low": "#f7f3f2",
+                "surface-container": "#f1edec",
+                "tertiary-fixed-dim": "#cbc5c5",
+                "surface-container-high": "#ebe7e7",
+                "on-secondary": "#ffffff",
+                "on-primary-fixed": "#1b1c1c",
+                "primary-container": "#3d3d3d",
+                "on-primary-container": "#a9a8a7",
+                "secondary-fixed-dim": "#c9c6c5",
+                "secondary": "#5f5e5e",
+                "inverse-primary": "#c8c6c6",
+                "on-tertiary-fixed-variant": "#494646",
+                "on-secondary-container": "#656464",
+                "inverse-on-surface": "#f4f0ef",
+                "ochre": "#D4880F" 
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "section-padding": "64px",
+                "container-margin": "24px",
+                "stack-md": "16px",
+                "base": "4px",
+                "stack-sm": "8px",
+                "stack-lg": "32px",
+                "gutter": "16px"
+        },
+        "fontFamily": {
+                "label-md": ["Inter"],
+                "body-md": ["Inter"],
+                "title-md": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-lg": ["Inter"],
+                "headline-xl": ["Inter"],
+                "numeral-xl": ["Inter"],
+                "headline-lg": ["Inter"]
+        },
+        "fontSize": {
+                "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "500"}],
+                "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                "numeral-xl": ["48px", {"lineHeight": "48px", "letterSpacing": "-0.04em", "fontWeight": "300"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+        }
+      },
+    },
+  }
+</script>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface shadow-sm z-40">
+<div class="flex items-center justify-between px-gutter py-stack-sm w-full">
+<div class="flex items-center gap-stack-md">
+<button class="touch-target hover:bg-surface-container-high transition-colors active:scale-95 rounded-full" data-i18n-title="changeLanguage">
+<span class="material-symbols-outlined text-primary">language</span>
+</button>
+<h1 class="font-title-md text-title-md font-bold text-primary">SoroKobo</h1>
+</div>
+<div class="flex items-center gap-stack-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden border-2 border-secondary-container touch-target">
+<img class="w-full h-full object-cover" data-alt="Profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByJiuOGiqUGtfmVP8xPDd_ubByGcmws8KXPB4lmOi6N60pdHx-8jn-bu0nx2g9FbyQSQr7c6mBlXDqeIePhwJyD1N2WgnRpoeXPx--_IxyTLhDWzKa2gPEQ7aSDRLXkEYj8pnhja06REGRgYhGWy_afYsmTHc-gXey-6KSiouiUypw5eAdCS8emdEy-6ULEplstnyay7gV2tZsxp_cnDAsVguABSG2gAg2f2o5SbReHWxiURGnK00vfx9ZFVsffSdoxOJyiGiy-X6k"/>
+</div>
+</div>
+</div>
+</header>
+<main class="px-container-margin mt-stack-md max-w-2xl mx-auto space-y-stack-lg">
+<!-- Greeting Section -->
+<section class="flex flex-col gap-base">
+<p class="font-label-md text-label-md text-on-surface-variant" data-i18n="greeting">Welcome back, Baba Tunde</p>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary" data-i18n="marketLedger">Your Daily Ledger</h2>
+</section>
+<!-- Net Position Card - Prominent Ochre Accent -->
+<section class="bg-primary p-stack-lg rounded-xl shadow-[0px_4px_12px_rgba(0,0,0,0.15)] text-on-primary relative overflow-hidden">
+<div class="absolute -top-4 -right-4 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[140px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div class="relative z-10">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md uppercase tracking-widest text-surface-variant" data-i18n="netPosition">NET BALANCE</span>
+<span class="bg-ochre text-white px-3 py-1 rounded-full text-label-md font-bold shadow-sm" data-i18n="liveBadge">LIVE</span>
+</div>
+<div class="mt-stack-md">
+<h3 class="font-numeral-xl text-headline-lg text-ochre drop-shadow-sm">₦127,500.00</h3>
+<div class="flex items-center gap-base mt-2 text-surface-variant/80">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span class="font-label-md text-label-md" data-i18n="thisWeekGrowth">Steady growth this week</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Stats Grid -->
+<section class="grid grid-cols-3 gap-stack-sm">
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex flex-col items-center text-center border-b-2 border-transparent">
+<div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary mb-stack-sm touch-target">
+<span class="material-symbols-outlined">arrow_downward</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant" data-i18n="thisWeekIncome">This Week Income</span>
+<span class="font-title-md text-title-md text-ochre font-bold" data-i18n="incomeValue">₦85k</span>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex flex-col items-center text-center border-b-2 border-transparent">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary mb-stack-sm touch-target">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant" data-i18n="thisWeekExpense">This Week Expense</span>
+<span class="font-title-md text-title-md text-on-surface font-bold" data-i18n="expenseValue">₦42k</span>
+</div>
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex flex-col items-center text-center border-b-2 border-error">
+<div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-error mb-stack-sm touch-target">
+<span class="material-symbols-outlined">emergency_home</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant" data-i18n="peopleOwing">People Owing</span>
+<span class="font-title-md text-title-md text-error font-bold" data-i18n="debtValue">₦18k</span>
+</div>
+</section>
+<!-- Voice Activation Prompt -->
+<section class="bg-ochre/10 border border-ochre/30 p-stack-md rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-stack-md">
+<div class="relative touch-target">
+<div class="absolute inset-0 bg-ochre rounded-full voice-ripple"></div>
+<div class="relative w-12 h-12 bg-ochre rounded-full flex items-center justify-center text-white shadow-md">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-primary font-bold" data-i18n="voiceExample">"Sold 5 bags of rice"</h4>
+<p class="font-label-md text-label-md text-on-surface-variant" data-i18n="voicePrompt">Tap here to record your work</p>
+</div>
+</div>
+<button class="text-on-surface-variant p-base active:scale-90 transition-all touch-target" data-i18n-title="close">
+<span class="material-symbols-outlined">close</span>
+</button>
+</section>
+<!-- Recent Activity List -->
+<section class="space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-primary" data-i18n="recentActivity">Recent Activity</h3>
+<button class="text-ochre font-label-md text-label-md hover:underline touch-target px-2" data-i18n="viewAll">View All</button>
+</div>
+<div class="space-y-stack-sm">
+<!-- Activity Item 1 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex items-center justify-between border-l-4 border-ochre">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center touch-target">
+<span class="material-symbols-outlined text-primary">mic</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-on-surface">Musa Textiles Ltd</p>
+<p class="font-label-md text-label-md text-on-surface-variant" data-i18n="activityMeta1">2 mins ago • Recorded by voice</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-ochre font-bold">+₦15,000</p>
+<span class="inline-block px-2 py-0.5 bg-ochre/20 text-ochre rounded text-[10px] font-bold uppercase" data-i18n="statusPaid">PAID</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center touch-target">
+<span class="material-symbols-outlined text-on-surface-variant">keyboard</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-on-surface">Store Rent (Part)</p>
+<p class="font-label-md text-label-md text-on-surface-variant" data-i18n="activityMeta2">1 hour ago • Typed entry</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-on-surface-variant font-bold">-₦25,000</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl shadow-sm flex items-center justify-between border-l-4 border-error">
+<div class="flex items-center gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center touch-target">
+<span class="material-symbols-outlined text-primary">mic</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-bold text-on-surface">Alhaji Sani (Debt)</p>
+<p class="font-label-md text-label-md text-on-surface-variant" data-i18n="activityMeta3">3 hours ago • Recorded by voice</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-title-md text-error font-bold">₦8,000</p>
+<span class="inline-block px-2 py-0.5 bg-error-container text-on-error-container rounded text-[10px] font-bold uppercase" data-i18n="statusOwed">OWED</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB for Quick Action - High Visibility Ochre -->
+<button class="fixed bottom-24 right-container-margin w-16 h-16 bg-ochre text-white rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform z-50 touch-target" data-i18n-title="quickAdd">
+<span class="material-symbols-outlined text-4xl font-bold" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar - Enhanced Touch Targets -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-gutter py-stack-md bg-white z-50 rounded-t-xl shadow-[0px_-4px_12px_rgba(0,0,0,0.08)]">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center bg-ochre/10 text-ochre rounded-xl px-4 py-2 active:scale-95 transition-all duration-150 touch-target flex-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md" data-i18n="navHome">Home</span>
+</a>
+<!-- Ledger -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150 touch-target flex-1" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label-md text-label-md" data-i18n="navLedger">Ledger</span>
+</a>
+<!-- Voice (Prominent Center) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-95 transition-all duration-150 flex-1" href="#">
+<div class="bg-primary rounded-full w-14 h-14 flex items-center justify-center -mt-8 shadow-lg text-on-primary">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">mic</span>
+</div>
+<span class="font-label-md text-label-md mt-1" data-i18n="navVoice">Voice</span>
+</a>
+<!-- Stock -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150 touch-target flex-1" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md" data-i18n="navStock">Stock</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary active:scale-95 transition-all duration-150 touch-target flex-1" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md" data-i18n="navProfile">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple i18n support mock for demonstration
+        const translations = {
+            en: {
+                greeting: "Welcome back, Baba Tunde",
+                marketLedger: "Your Daily Ledger",
+                netPosition: "NET BALANCE",
+                liveBadge: "LIVE",
+                thisWeekGrowth: "Steady growth this week",
+                thisWeekIncome: "This Week Income",
+                thisWeekExpense: "This Week Expense",
+                peopleOwing: "People Owing",
+                voiceExample: "\"Sold 5 bags of rice\"",
+                voicePrompt: "Tap here to record your work",
+                recentActivity: "Recent Activity",
+                viewAll: "View All",
+                statusPaid: "PAID",
+                statusOwed: "OWED",
+                navHome: "Home",
+                navLedger: "Ledger",
+                navVoice: "Voice",
+                navStock: "Stock",
+                navProfile: "Profile",
+                activityMeta1: "2 mins ago • Recorded by voice",
+                activityMeta2: "1 hour ago • Typed entry",
+                activityMeta3: "3 hours ago • Recorded by voice"
+            }
+        };
+
+        // UI Interactions
+        document.querySelectorAll('.voice-ripple').forEach(ripple => {
+            ripple.parentElement.parentElement.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+    </script>
+</body></html>
