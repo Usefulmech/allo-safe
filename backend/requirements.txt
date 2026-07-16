@@ -7,4 +7,4 @@ google-genai==0.3.0
 edge-tts==6.1.12
 appwrite>=4.1.0
 python-multipart==0.0.9
-africastalking>=1.2.2
+twilio>=9.0.0

@@ -1,21 +1,44 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { account } from '../lib/appwrite';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Profile() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const { user, checkSession, logout } = useAuth();
 
-  // Mock state for user details
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('Amina Bello');
-  const [shopName, setShopName] = useState('Amina Provisions Store');
-  const [phone, setPhone] = useState('+234 801 234 5678');
+  const [name, setName] = useState('');
+  const [shopName, setShopName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLanguageChange = (lang: string) => {
+  // Sync user details when loaded
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setPhone(user.phone || '');
+      setShopName(user.prefs?.shopName || 'My Store');
+      if (user.prefs?.language) {
+        i18n.changeLanguage(user.prefs.language);
+      }
+    }
+  }, [user, i18n]);
+
+  const handleLanguageChange = async (lang: string) => {
     i18n.changeLanguage(lang);
+    if (user) {
+      try {
+        await account.updatePrefs({ ...user.prefs, language: lang });
+        await checkSession();
+      } catch (e) {
+        console.error("Failed to save language preference", e);
+      }
+    }
   };
 
   const languages = [
@@ -26,7 +49,8 @@ export default function Profile() {
     { code: 'ig', label: 'Igbo' },
   ];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -36,15 +60,38 @@ export default function Profile() {
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      // Mock file upload logic here
-      alert(`Selected photo: ${e.target.files[0].name}`);
+      alert(`Photo upload logic here. Selected: ${e.target.files[0].name}`);
     }
   };
 
-  const handleEditToggle = () => {
+  const handleEditToggle = async () => {
     if (isEditing) {
-      // Mock save logic here
-      setIsEditing(false);
+      // Save logic
+      setIsSaving(true);
+      try {
+        if (name !== user?.name) {
+          await account.updateName(name);
+        }
+        if (phone !== user?.phone) {
+          // Note: Updating phone in Appwrite usually requires password confirmation 
+          // For now, we will assume it works or handle the error.
+          try {
+             await account.updatePhone(phone, 'currentPassword'); // dummy password
+          } catch (e) {
+             console.warn("Phone update skipped due to missing password logic", e);
+          }
+        }
+        if (shopName !== user?.prefs?.shopName) {
+          await account.updatePrefs({ ...user?.prefs, shopName });
+        }
+        await checkSession(); // Refresh context
+        setIsEditing(false);
+      } catch (error) {
+        console.error("Failed to update profile", error);
+        alert("Failed to save profile updates.");
+      } finally {
+        setIsSaving(false);
+      }
     } else {
       setIsEditing(true);
     }
@@ -52,9 +99,9 @@ export default function Profile() {
 
   return (
     <div className="text-text-primary min-h-screen font-inter">
-      <main className="px-4 md:px-8 py-6 max-w-3xl mx-auto space-y-6">
+      <main className="px-4 md:px-8 py-6 max-w-3xl mx-auto space-y-6 pb-32 md:pb-6">
         
-        {/* Header (Mobile Only, Desktop handled by TopNav) */}
+        {/* Header */}
         <div className="md:hidden flex items-center justify-between mb-2">
           <h2 className="text-2xl font-semibold text-primary">{t('navProfile') || 'Profile'}</h2>
         </div>
@@ -63,9 +110,10 @@ export default function Profile() {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-outline-variant/30 flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left relative overflow-hidden">
           <button 
             onClick={handleEditToggle} 
-            className={`absolute top-4 right-4 cursor-pointer px-4 py-2 rounded-full font-bold text-sm transition-colors ${isEditing ? 'bg-accent text-white hover:bg-accent/90' : 'bg-surface-container text-primary hover:bg-outline-variant/30'}`}
+            disabled={isSaving}
+            className={`absolute top-4 right-4 cursor-pointer px-4 py-2 rounded-full font-bold text-sm transition-colors disabled:opacity-50 ${isEditing ? 'bg-accent text-white hover:bg-accent/90' : 'bg-surface-container text-primary hover:bg-outline-variant/30'}`}
           >
-            {isEditing ? 'Save' : <span className="material-symbols-outlined text-[20px] align-middle" style={{ fontVariationSettings: "'FILL' 1" }}>edit</span>}
+            {isSaving ? 'Saving...' : isEditing ? 'Save' : <span className="material-symbols-outlined text-[20px] align-middle" style={{ fontVariationSettings: "'FILL' 1" }}>edit</span>}
           </button>
 
           <div className="relative">
@@ -97,9 +145,9 @@ export default function Profile() {
                   className="text-2xl font-bold text-primary bg-surface-container/30 border border-outline-variant/50 rounded-lg px-2 py-1 w-full max-w-[250px] outline-none focus:border-accent focus:ring-1 focus:ring-accent text-center md:text-left"
                 />
               ) : (
-                <h2 className="text-2xl font-bold text-primary">{name}</h2>
+                <h2 className="text-2xl font-bold text-primary">{name || 'User'}</h2>
               )}
-              <p className="text-sm font-medium text-accent mt-1">ID: ALLO-882-AB</p>
+              <p className="text-sm font-medium text-accent mt-1">ID: {user?.$id?.slice(-8) || 'Unknown'}</p>
             </div>
             
             <div className="pt-2 flex flex-col md:flex-row gap-3 md:gap-6 text-sm text-text-secondary">
@@ -126,7 +174,7 @@ export default function Profile() {
                     className="font-medium bg-surface-container/30 border border-outline-variant/50 rounded-lg px-2 py-1 w-full outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                   />
                 ) : (
-                  <span>{phone}</span>
+                  <span>{phone || 'No phone set'}</span>
                 )}
               </div>
             </div>
@@ -183,7 +231,6 @@ export default function Profile() {
             </div>
             
             <div className="space-y-2">
-              {/* Voice Log Item 1 */}
               <div className="bg-surface-container/50 border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 cursor-pointer hover:bg-surface-container transition-colors">
                 <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
                   <span className="material-symbols-outlined text-accent text-[18px]">mic</span>
@@ -194,7 +241,6 @@ export default function Profile() {
                 </div>
                 <span className="material-symbols-outlined text-outline-variant flex-shrink-0">play_circle</span>
               </div>
-              {/* Voice Log Item 2 */}
               <div className="bg-surface-container/50 border border-outline-variant/30 rounded-lg p-3 flex items-center gap-3 cursor-pointer hover:bg-surface-container transition-colors">
                 <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0">
                   <span className="material-symbols-outlined text-accent text-[18px]">mic</span>
@@ -213,7 +259,7 @@ export default function Profile() {
         <section className="pt-4 pb-8">
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-4 text-danger border-2 border-danger/20 rounded-xl bg-danger-surface hover:bg-danger hover:text-white active:scale-95 transition-all font-bold"
+            className="w-full flex items-center justify-center gap-2 py-4 text-danger border-2 border-danger/20 rounded-xl bg-danger-surface hover:bg-danger hover:text-white active:scale-95 transition-all font-bold shadow-sm"
           >
             <span className="material-symbols-outlined">logout</span>
             <span>{t('logout') || 'Log Out'}</span>

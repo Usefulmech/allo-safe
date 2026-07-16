@@ -1,30 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { ID } from 'appwrite';
+import { account } from '../lib/appwrite';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
+  const [countryCode, setCountryCode] = useState('+234');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState(['', '', '', '']);
+  const [userId, setUserId] = useState('');
   const [showTooltip, setShowTooltip] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
+  
+  const { checkSession, user } = useAuth();
 
   useEffect(() => {
+    // If already logged in, redirect to dashboard
+    if (user) {
+      navigate('/dashboard');
+    }
     const timer = setTimeout(() => {
       setShowTooltip(false);
     }, 5000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [user, navigate]);
 
-  const handleSendPin = () => {
-    if (phone.length < 10) return;
-    setStep('otp');
+  const handleSendPin = async () => {
+    // Demo bypass for judges
+    if (phone === '0000000000') {
+      setStep('otp');
+      setUserId('demo-user');
+      return;
+    }
+
+    if (phone.length < 5) return;
+    try {
+      const formattedPhone = countryCode + phone.replace(/^0+/, '');
+      const token = await account.createPhoneToken(ID.unique(), formattedPhone);
+      setUserId(token.userId);
+      setStep('otp');
+    } catch (error) {
+      console.error(error);
+      alert('Failed to send PIN. Check your number or Appwrite Twilio configuration.');
+    }
   };
 
-  const handleOtpChange = (index: number, value: string) => {
+  const handleOtpChange = async (index: number, value: string) => {
     if (value.length > 1) return; // limit to 1 char
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -34,10 +60,30 @@ export default function Login() {
       document.getElementById(`otp-${index + 1}`)?.focus();
     } else if (value !== '' && index === 3) {
       // Complete
-      setShowSuccess(true);
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 1500);
+      const fullOtp = newOtp.join('');
+      
+      // Demo bypass logic
+      if (userId === 'demo-user') {
+        setShowSuccess(true);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
+        return;
+      }
+
+      try {
+        await account.createSession(userId, fullOtp);
+        await checkSession();
+        setShowSuccess(true);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1500);
+      } catch (error) {
+        console.error(error);
+        alert('Invalid PIN. Please try again.');
+        setOtp(['', '', '', '']);
+        document.getElementById(`otp-0`)?.focus();
+      }
     }
   };
 
@@ -52,14 +98,7 @@ export default function Login() {
   };
 
   return (
-    <div 
-      className="min-h-screen font-inter flex flex-col relative bg-primary"
-      style={{
-        backgroundImage: "url('/bg-market.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="min-h-screen font-inter flex flex-col relative">
       {/* Dark overlay for readability - made lighter so the background is less faded */}
       <div className="absolute inset-0 bg-primary/60 lg:bg-gradient-to-r lg:from-primary/80 lg:to-primary/20"></div>
 
@@ -107,11 +146,16 @@ export default function Login() {
                   {t('phoneLabel')}
                 </label>
                 <div className="flex items-center bg-surface-container border border-outline-variant/40 rounded-xl focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20 overflow-hidden transition-all h-14 shadow-sm">
-                  <span className="pl-4 pr-2 font-bold text-primary border-r border-outline-variant/40">+234</span>
+                  <input
+                    type="text"
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="w-16 pl-4 pr-1 font-bold text-primary bg-transparent border-none outline-none focus:ring-0 text-lg border-r border-outline-variant/40"
+                  />
                   <input
                     id="phone"
                     type="tel"
-                    maxLength={10}
+                    maxLength={15}
                     placeholder="801 234 5678"
                     className="bg-transparent border-none focus:ring-0 w-full text-xl tracking-widest placeholder:text-outline-variant/60 placeholder:font-normal outline-none px-3"
                     value={phone}

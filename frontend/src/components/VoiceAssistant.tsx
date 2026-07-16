@@ -1,27 +1,94 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/AuthContext';
 
 export default function VoiceAssistant() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const processingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleStartRecording = () => {
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  const handleStartRecording = async () => {
     if (isProcessing) return;
-    setIsListening(true);
+    setErrorMsg(null);
+    
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.start();
+      setIsListening(true);
+    } catch (err) {
+      console.error("Microphone access denied or error:", err);
+      setErrorMsg("Microphone access is required to use this feature.");
+    }
   };
 
   const handleStopRecording = () => {
-    if (!isListening) return;
+    if (!isListening || !mediaRecorderRef.current) return;
+    
     setIsListening(false);
     setIsProcessing(true);
-    processingTimeout.current = setTimeout(() => {
-      setIsProcessing(false);
-      navigate('/ledger');
-    }, 3000);
+    
+    const mediaRecorder = mediaRecorderRef.current;
+    
+    mediaRecorder.onstop = async () => {
+      // Stop all tracks to release microphone
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      
+      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+      
+      if (!user) {
+        setErrorMsg("You must be logged in to record.");
+        setIsProcessing(false);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.webm');
+      formData.append('user_id', user.$id);
+      formData.append('phone_number', user.phone || 'unknown');
+
+      try {
+        // We call the backend FastAPI endpoint directly.
+        // Assuming backend is running on localhost:8000 for local dev
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+        
+        const response = await fetch(`${BACKEND_URL}/api/pwa/process-audio`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to process audio');
+        }
+
+        // Processing success! Navigate back to ledger
+        navigate('/ledger');
+      } catch (err) {
+        console.error("Audio upload error", err);
+        setErrorMsg("Failed to process your recording. Please try again.");
+      } finally {
+        setIsProcessing(false);
+      }
+    };
+
+    mediaRecorder.stop();
   };
 
   return (
@@ -33,6 +100,11 @@ export default function VoiceAssistant() {
           <p className="text-text-secondary text-sm opacity-80">
             Tell AlloSafe what happened: "Sold 2 bags of rice for 40,000 to Musa"
           </p>
+          {errorMsg && (
+            <p className="text-danger text-sm font-bold mt-4 px-4 py-2 bg-danger-surface rounded-lg">
+              {errorMsg}
+            </p>
+          )}
         </div>
 
         {/* Interaction Area */}

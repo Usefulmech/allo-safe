@@ -10,6 +10,13 @@
     <title>AlloSafe</title>
   </head>
   <body style="background-color: #3D3D3D; background-image: url('/bg-market.png'); background-size: cover; background-position: center; margin: 0;">
+    <!-- Splash Screen Curtain -->
+    <div id="splash-screen" style="position: fixed; inset: 0; z-index: 9999; background-color: #3D3D3D; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.6s ease-out;">
+      <div style="width: 64px; height: 64px; background-color: #D4880F; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(212, 136, 15, 0.4); display: flex; justify-content: center; align-items: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 -960 960 960" width="32" fill="#FFFFFF"><path d="M160-120q-33 0-56.5-23.5T80-200v-440q0-33 23.5-56.5T160-720h160v-80q0-33 23.5-56.5T400-880h160q33 0 56.5 23.5T640-800v80h160q33 0 56.5 23.5T880-640v440q0 33-23.5 56.5T800-120H160Zm0-80h640v-440H160v440Zm240-520h160v-80H400v80ZM160-200v-440 440Z"/></svg>
+      </div>
+      <h1 style="color: white; font-family: 'Inter', sans-serif; font-size: 32px; font-weight: bold; margin: 0; tracking: tight;">AlloSafe</h1>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

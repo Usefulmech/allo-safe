@@ -1,17 +1,72 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { databases, DB_ID, COL_TRANSACTIONS } from '../lib/appwrite';
+import { Query } from 'appwrite';
+import type { Models } from 'appwrite';
+import { useAuth } from '../lib/AuthContext';
 
 export default function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [stats, setStats] = useState({ income: 0, expense: 0, debt: 0, net: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch user's transactions, ordered by timestamp descending
+        const response = await databases.listDocuments(
+          DB_ID,
+          COL_TRANSACTIONS,
+          [
+            Query.equal('user_id', user.$id),
+            Query.orderDesc('timestamp'),
+            Query.limit(20)
+          ]
+        );
+        
+        const docs = response.documents;
+        setTransactions(docs.slice(0, 3)); // Show only 3 recent
+        
+        // Calculate basic stats from the recent 20 docs (in a real app, do this securely on backend or query all)
+        let income = 0;
+        let expense = 0;
+        let debt = 0;
+        
+        docs.forEach(doc => {
+          if (doc.type === 'sale') income += doc.amount;
+          if (doc.type === 'expense') expense += doc.amount;
+          if (doc.type === 'debt_received' || doc.type === 'debt_given') debt += doc.amount; // simplification
+        });
+        
+        setStats({ income, expense, debt, net: income - expense });
+      } catch (error) {
+        console.error("Error fetching transactions", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-accent"><span className="material-symbols-outlined animate-spin">refresh</span></div>;
+  }
 
   return (
     <div className="text-text-primary min-h-screen font-inter">
-      <main className="px-4 md:px-8 py-6 max-w-5xl mx-auto space-y-6">
+      <main className="px-4 md:px-8 py-6 w-full max-w-[1600px] mx-auto space-y-6">
         {/* Greeting Section */}
         <section className="flex flex-col gap-1">
           <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-            {t('greeting', { name: 'Baba Tunde' })}
+            {t('greeting', { name: user?.name || 'My Friend' })}
           </p>
           <h2 className="text-2xl font-semibold text-primary">Your Daily Ledger</h2>
         </section>
@@ -35,7 +90,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="mt-4">
-                <h3 className="text-5xl font-light text-accent drop-shadow-sm">₦127,500.00</h3>
+                <h3 className="text-5xl font-light text-accent drop-shadow-sm">₦{stats.net.toLocaleString()}</h3>
                 <div className="flex items-center gap-1 mt-2 text-white/60">
                   <span className="material-symbols-outlined text-sm">trending_up</span>
                   <span className="text-xs font-medium">Steady growth this week</span>
@@ -52,7 +107,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <span className="text-xs font-medium text-text-secondary block">{t('thisWeekIncome')}</span>
-                <span className="text-lg font-bold text-accent">₦85k</span>
+                <span className="text-lg font-bold text-accent">₦{stats.income.toLocaleString()}</span>
               </div>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm flex items-center gap-3 border-l-4 border-outline-variant/30">
@@ -61,7 +116,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <span className="text-xs font-medium text-text-secondary block">{t('thisWeekExpense')}</span>
-                <span className="text-lg font-bold text-text-primary">₦42k</span>
+                <span className="text-lg font-bold text-text-primary">₦{stats.expense.toLocaleString()}</span>
               </div>
             </div>
             <div className="bg-white p-4 rounded-xl shadow-sm flex items-center gap-3 border-l-4 border-danger">
@@ -70,7 +125,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <span className="text-xs font-medium text-text-secondary block">{t('peopleOwing')}</span>
-                <span className="text-lg font-bold text-danger">₦18k</span>
+                <span className="text-lg font-bold text-danger">₦{stats.debt.toLocaleString()}</span>
               </div>
             </div>
           </section>
@@ -105,55 +160,32 @@ export default function Dashboard() {
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {/* Activity Item 1 */}
-            <div className="bg-white p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-accent">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-primary text-[18px]">mic</span>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-text-primary">Musa Textiles Ltd</p>
-                  <p className="text-xs text-text-secondary">2 mins ago • Voice</p>
-                </div>
+            {transactions.length === 0 ? (
+              <div className="md:col-span-2 text-center py-8 text-text-secondary">
+                {t('noRecentActivity')}
               </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-base font-bold text-accent">+₦15,000</p>
-                <span className="inline-block px-2 py-0.5 bg-accent/20 text-accent rounded text-[10px] font-bold uppercase">PAID</span>
-              </div>
-            </div>
-
-            {/* Activity Item 2 */}
-            <div className="bg-white p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-transparent">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-text-secondary text-[18px]">keyboard</span>
+            ) : (
+              transactions.map((tx) => (
+                <div key={tx.$id} className={`bg-white p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 ${tx.type === 'sale' ? 'border-accent' : tx.type === 'expense' ? 'border-transparent' : 'border-danger'}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-primary text-[18px]">
+                        {tx.source === 'voice' ? 'mic' : 'keyboard'}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-text-primary">{tx.description || tx.type}</p>
+                      <p className="text-xs text-text-secondary">{new Date(tx.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} • {tx.source === 'voice' ? 'Voice' : 'Typed'}</p>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className={`text-base font-bold ${tx.type === 'sale' ? 'text-accent' : tx.type === 'expense' ? 'text-text-secondary' : 'text-danger'}`}>
+                      {tx.type === 'sale' ? '+' : '-'}₦{tx.amount.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-text-primary">Store Rent (Part)</p>
-                  <p className="text-xs text-text-secondary">1 hour ago • Typed</p>
-                </div>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-base font-bold text-text-secondary">-₦25,000</p>
-              </div>
-            </div>
-
-            {/* Activity Item 3 */}
-            <div className="bg-white p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-danger md:col-span-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-primary text-[18px]">mic</span>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-text-primary">Alhaji Sani (Debt)</p>
-                  <p className="text-xs text-text-secondary">3 hours ago • Voice</p>
-                </div>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-base font-bold text-danger">₦8,000</p>
-                <span className="inline-block px-2 py-0.5 bg-danger-surface text-danger rounded text-[10px] font-bold uppercase">OWED</span>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </section>
       </main>

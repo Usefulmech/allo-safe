@@ -24,7 +24,7 @@ export default function TopNav() {
   return (
     // Only visible on desktop (md and up)
     <header className="hidden md:flex w-full top-0 sticky bg-white border-b border-outline-variant/30 z-50 shadow-sm">
-      <div className="flex items-center justify-between w-full max-w-6xl mx-auto px-8 py-3">
+      <div className="flex items-center justify-between w-full max-w-[1600px] mx-auto px-8 py-3">
         {/* Logo */}
         <div className="flex items-center gap-2 flex-shrink-0">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
