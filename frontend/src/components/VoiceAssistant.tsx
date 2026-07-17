@@ -65,9 +65,12 @@ export default function VoiceAssistant() {
       formData.append('phone_number', user.phone || 'unknown');
 
       try {
-        // We call the backend FastAPI endpoint directly.
-        // Assuming backend is running on localhost:8000 for local dev
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+        // Vercel does not share an origin with Render, so this must be set in
+        // the Vercel environment. Falling back to localhost is local-dev only.
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '');
+        if (!BACKEND_URL) {
+          throw new Error('VITE_BACKEND_URL is not configured for this deployment.');
+        }
         
         const response = await fetch(`${BACKEND_URL}/api/pwa/process-audio`, {
           method: 'POST',
@@ -75,14 +78,15 @@ export default function VoiceAssistant() {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to process audio');
+          const payload = await response.json().catch(() => null);
+          throw new Error(payload?.detail || `Voice processing failed (${response.status}).`);
         }
 
         // Processing success! Navigate back to ledger
         navigate('/ledger');
       } catch (err) {
         console.error("Audio upload error", err);
-        setErrorMsg("Failed to process your recording. Please try again.");
+        setErrorMsg(err instanceof Error ? err.message : "Failed to process your recording. Please try again.");
       } finally {
         setIsProcessing(false);
       }
@@ -154,7 +158,11 @@ export default function VoiceAssistant() {
 
         {/* Type instead */}
         <div className="mt-10">
-          <button className="flex items-center gap-2 text-primary text-sm hover:underline decoration-accent decoration-2 underline-offset-4 px-6 py-4 transition-colors rounded-xl bg-white border border-outline-variant/30 shadow-sm">
+          <button
+            type="button"
+            onClick={() => navigate('/ledger?add=1')}
+            className="flex items-center gap-2 text-primary text-sm hover:underline decoration-accent decoration-2 underline-offset-4 px-6 py-4 transition-colors rounded-xl bg-white border border-outline-variant/30 shadow-sm"
+          >
             <span className="material-symbols-outlined text-xl">keyboard</span>
             <span>{t('typeInstead')}</span>
           </button>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ID } from 'appwrite';
 import { account } from '../lib/appwrite';
 import { useAuth } from '../lib/AuthContext';
 
@@ -13,7 +12,7 @@ export default function Login() {
   const [countryCode, setCountryCode] = useState('+234');
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState(['', '', '', '']);
-  const [userId, setUserId] = useState('');
+  const userId: string = '';
   const [showTooltip, setShowTooltip] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
   
@@ -31,22 +30,23 @@ export default function Login() {
   }, [user, navigate]);
 
   const handleSendPin = async () => {
-    // Demo bypass for judges
-    if (phone === '0000000000') {
-      setStep('otp');
-      setUserId('demo-user');
-      return;
-    }
-
     if (phone.length < 5) return;
     try {
-      const formattedPhone = countryCode + phone.replace(/^0+/, '');
-      const token = await account.createPhoneToken(ID.unique(), formattedPhone);
-      setUserId(token.userId);
-      setStep('otp');
+      // Bypass PIN and use anonymous session to avoid Twilio SMS complexities
+      try {
+        await account.createAnonymousSession();
+      } catch (err: any) {
+        // If a session already exists, it might throw an error. We can ignore it.
+        console.log("Session might already exist:", err);
+      }
+      await checkSession();
+      setShowSuccess(true);
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1500);
     } catch (error) {
       console.error(error);
-      alert('Failed to send PIN. Check your number or Appwrite Twilio configuration.');
+      alert('Failed to login. Please try again.');
     }
   };
 

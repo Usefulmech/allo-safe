@@ -30,13 +30,13 @@ function App() {
     // Remove the splash screen smoothly once React is fully mounted and ready
     const splash = document.getElementById('splash-screen');
     if (splash) {
-      // Increased delay to ensure Tailwind CSS and large background images are fully processed
-      setTimeout(() => {
+      // Fade as soon as React is mounted; an artificial wait makes the app feel slower.
+      requestAnimationFrame(() => {
         splash.style.opacity = '0';
         setTimeout(() => {
           splash.remove();
-        }, 600); // Matches the CSS transition time
-      }, 800);
+        }, 250);
+      });
     }
   }, []);
 

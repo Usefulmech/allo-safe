@@ -13,6 +13,12 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [stats, setStats] = useState({ income: 0, expense: 0, debt: 0, net: 0 });
   const [loading, setLoading] = useState(true);
+  const hour = new Date().getHours();
+  const greeting = hour < 12
+    ? 'Good morning'
+    : hour < 17
+      ? 'Good afternoon'
+      : 'Good evening';
 
   useEffect(() => {
     if (!user) return;
@@ -65,7 +71,7 @@ export default function Dashboard() {
         {/* Greeting Section */}
         <section className="flex flex-col gap-1">
           <p className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-            {t('greeting', { name: user?.name || 'My Friend' })}
+            {`${greeting}, ${user?.name || 'My Friend'}`}
           </p>
           <h2 className="text-2xl font-semibold text-primary">Your Daily Ledger</h2>
         </section>

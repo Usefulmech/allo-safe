@@ -75,8 +75,9 @@ if create_collection_if_not_exists("transactions", "Transactions"):
     print("Adding attributes to Transactions...")
     databases.create_string_attribute(DB_ID, "transactions", "user_id", 50, True)
     databases.create_float_attribute(DB_ID, "transactions", "amount", True)
-    databases.create_string_attribute(DB_ID, "transactions", "type", 10, True) # IN or OUT
+    databases.create_string_attribute(DB_ID, "transactions", "type", 20, True)
     databases.create_string_attribute(DB_ID, "transactions", "description", 255, False)
+    databases.create_string_attribute(DB_ID, "transactions", "source", 20, False)
     databases.create_datetime_attribute(DB_ID, "transactions", "timestamp", True)
     wait_for_attributes()
 
