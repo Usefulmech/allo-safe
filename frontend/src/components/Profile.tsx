@@ -22,9 +22,10 @@ export default function Profile() {
     if (user) {
       setName(user.name || '');
       setPhone(user.phone || '');
-      setShopName(user.prefs?.shopName || 'My Store');
-      if (user.prefs?.language) {
-        i18n.changeLanguage(user.prefs.language);
+      const prefs = user.prefs as any;
+      setShopName(prefs?.shopName || 'My Store');
+      if (prefs?.language) {
+        i18n.changeLanguage(prefs.language);
       }
     }
   }, [user, i18n]);
@@ -33,7 +34,8 @@ export default function Profile() {
     i18n.changeLanguage(lang);
     if (user) {
       try {
-        await account.updatePrefs({ ...user.prefs, language: lang });
+        const prefs = user.prefs as any;
+        await account.updatePrefs({ ...prefs, language: lang });
         await checkSession();
       } catch (e) {
         console.error("Failed to save language preference", e);
@@ -81,8 +83,9 @@ export default function Profile() {
              console.warn("Phone update skipped due to missing password logic", e);
           }
         }
-        if (shopName !== user?.prefs?.shopName) {
-          await account.updatePrefs({ ...user?.prefs, shopName });
+        const prefs = user?.prefs as any;
+        if (shopName !== prefs?.shopName) {
+          await account.updatePrefs({ ...prefs, shopName });
         }
         await checkSession(); // Refresh context
         setIsEditing(false);

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { databases, DB_ID, COL_TRANSACTIONS } from '../lib/appwrite';
 import { Query, ID } from 'appwrite';
 import { useAuth } from '../lib/AuthContext';
@@ -51,7 +50,6 @@ const SwipeableItem = ({ children, onEdit, onDelete }: { children: React.ReactNo
 
 export default function LedgerHistory() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user } = useAuth();
   
   const [filter, setFilter] = useState('All');

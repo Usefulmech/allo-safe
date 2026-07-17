@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { databases, DB_ID, COL_TRANSACTIONS } from '../lib/appwrite';
 import { Query } from 'appwrite';
-import type { Models } from 'appwrite';
 import { useAuth } from '../lib/AuthContext';
 
 export default function Dashboard() {
