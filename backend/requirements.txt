@@ -8,3 +8,4 @@ edge-tts==6.1.12
 appwrite>=4.1.0
 python-multipart==0.0.9
 twilio>=9.0.0
+httpx>=0.24.0

@@ -17,7 +17,8 @@ async def get_tts_url(request: Request, text: str, lang_code: str = "en-NG") -> 
     output_path = os.path.join("temp_audio", filename)
     os.makedirs("temp_audio", exist_ok=True)
     await ai.generate_speech(text, lang_code, output_path)
-    return f"{request.base_url}internal/audio/{filename}"
+    # Using relative URL so Twilio automatically uses the webhook's scheme and host (e.g. HTTPS on Render)
+    return f"/internal/audio/{filename}"
 
 async def download_twilio_audio(recording_url: str) -> str:
     """Download audio from Twilio and return the local temp path."""
